@@ -6,7 +6,7 @@
 .pr-detail .pr-metadata,
 .pr-detail .pr-section-toggle,
 .pr-detail .pr-code,
-.pr-detail .pr-description > .markdown,
+.pr-detail .pr-description .markdown,
 .pr-detail .pr-description-skeleton {
   padding-inline: var(--pr-gutter);
 }
