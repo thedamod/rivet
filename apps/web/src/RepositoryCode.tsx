@@ -36,7 +36,10 @@ export function RepositoryCode({
   const setSelected = onSelect;
   const filePanel = useRef<HTMLDivElement>(null);
   const previousSelection = useRef(selected);
+  const browseScroll = useRef(0);
   function changeSelection(path: string) {
+    if (path && !selected)
+      browseScroll.current = document.querySelector(".main")?.scrollTop || 0;
     if (
       typeof document.startViewTransition === "function" &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -50,6 +53,8 @@ export function RepositoryCode({
     changeSelection(path);
   }
   useLayoutEffect(() => {
+    if (!selected && previousSelection.current)
+      document.querySelector(".main")?.scrollTo({ top: browseScroll.current });
     if (selected && previousSelection.current !== selected)
       filePanel.current?.scrollTo({ top: 0 });
     previousSelection.current = selected;

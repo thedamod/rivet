@@ -29,3 +29,82 @@
 ::view-transition-image-pair(repository-explorer) {
   isolation: isolate;
 }
+
+/* The file viewer keeps a full-width, compact repository toolbar. */
+.repository-view .repo-header {
+  view-transition-name: repository-header;
+}
+.repository-view:has(.has-file) {
+  height: calc(100dvh - var(--app-navbar-height, 60px));
+}
+.repository-view:has(.has-file) .repo-header {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+.repository-view:has(.has-file) .repo-header-title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+}
+.repository-view:has(.has-file) .repo-header-title h1 {
+  font-size: 13px;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.repository-view:has(.has-file) .repo-header-title > .badge,
+.repository-view:has(.has-file) .repo-header-actions,
+.repository-view:has(.has-file) .repo-header > p {
+  display: none;
+}
+.repository-view:has(.has-file) .repo-header .tabs {
+  margin: 0;
+  border: 0;
+  gap: 4px;
+  min-width: 0;
+}
+.repository-view:has(.has-file) .repo-header .tabs button {
+  height: 28px;
+  padding: 4px 7px;
+}
+.repository-view:has(.has-file) .repo-header .t3-branch-trigger {
+  max-width: 160px;
+}
+::view-transition-group(repository-header) {
+  animation: none;
+}
+::view-transition-old(repository-header),
+::view-transition-new(repository-header) {
+  animation-duration: 180ms;
+}
+@media (max-width: 760px) {
+  .repository-view:has(.has-file) .repo-header {
+    padding: 6px 10px;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+  }
+  .repository-view:has(.has-file) .repo-header-title {
+    flex-basis: 100%;
+  }
+  .repository-view:has(.has-file) .repo-header .tabs {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(repository-header),
+  ::view-transition-new(repository-header) {
+    animation-duration: 0s;
+  }
+}
+
+.repository-view:has(.has-file) .code-toolbar {
+  display: none;
+}
