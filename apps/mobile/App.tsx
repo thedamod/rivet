@@ -338,6 +338,9 @@ function Workspace({
   const [activityRequest, setActivityRequest] = useState(0);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [selectIssueRepo, setSelectIssueRepo] = useState(false);
+  const [issueRepo, setIssueRepo] = useState<Repository | null>(null);
+  const [issueRepoPage, setIssueRepoPage] = useState(1);
   const [state, setState] = useState("open");
   const backX = useRef(new Animated.Value(0)).current;
   const childBack = useRef<(() => boolean) | null>(null);
@@ -398,6 +401,11 @@ function Workspace({
       tab === "starred" ? api.starred(page) : api.repositories(page),
     enabled: !!viewer.data && (tab === "repositories" || tab === "starred"),
   });
+  const issueRepos = useQuery({
+    queryKey: ["issue-create-repos", issueRepoPage],
+    queryFn: () => api.repositories(issueRepoPage),
+    enabled: selectIssueRepo,
+  });
   const issues = useQuery({
     queryKey: ["issues", tab, state, page],
     queryFn: () =>
@@ -444,10 +452,7 @@ function Workspace({
           ]}
         >
           {route ? (
-            <Pressable
-              accessibilityLabel="Back"
-              onPress={back}
-            >
+            <Pressable accessibilityLabel="Back" onPress={back}>
               <AppIcon
                 name={route.kind === "issue" ? "arrow-back" : "chevron-back"}
                 size={22}
@@ -463,7 +468,17 @@ function Workspace({
             onChangeText={setSearch}
             placeholder="Search"
             placeholderTextColor={colors.placeholder}
-            style={[s.input, { flex: 1, height: 36, paddingVertical: 0, borderColor: colors.input, color: colors.text, backgroundColor: colors.surface }]}
+            style={[
+              s.input,
+              {
+                flex: 1,
+                height: 36,
+                paddingVertical: 0,
+                borderColor: colors.input,
+                color: colors.text,
+                backgroundColor: colors.surface,
+              },
+            ]}
           />
           {route?.kind === "issue" ? (
             <>
@@ -779,7 +794,18 @@ function Workspace({
                         />
                       ))}
                     {!issues.data?.items.length && (
-                      <Txt muted>No matching conversations.</Txt>
+                      <View style={{ gap: 12 }}>
+                        <Txt muted>No matching conversations.</Txt>
+                        {tab === "issues" && (
+                          <Btn
+                            title="New issue"
+                            onPress={() => {
+                              setIssueRepoPage(1);
+                              setSelectIssueRepo(true);
+                            }}
+                          />
+                        )}
+                      </View>
                     )}
                     <Pages
                       page={page}
@@ -792,6 +818,76 @@ function Workspace({
             )}
           </ScrollView>
         )}
+        <Sheet
+          visible={selectIssueRepo}
+          onClose={() => {
+            setSelectIssueRepo(false);
+            setIssueRepo(null);
+          }}
+          title={issueRepo ? "New issue" : "Choose a repository"}
+          subtitle={issueRepo?.full_name}
+          colors={colors}
+        >
+          {issueRepo ? (
+            <Composer
+              embedded
+              visible
+              repo={issueRepo.full_name}
+              onClose={() => {
+                setSelectIssueRepo(false);
+                setIssueRepo(null);
+              }}
+              onCreated={(number) => {
+                const repo = issueRepo.full_name;
+                setSelectIssueRepo(false);
+                setIssueRepo(null);
+                client.invalidateQueries({ queryKey: ["issues"] });
+                client.invalidateQueries({ queryKey: ["repoIssues", repo] });
+                open({ kind: "issue", repo, number, pull: false });
+              }}
+            />
+          ) : (
+            <ScrollView contentContainerStyle={s.content}>
+              {issueRepos.isPending ? (
+                <Busy />
+              ) : issueRepos.error ? (
+                <Problem error={issueRepos.error} />
+              ) : (
+                <>
+                  {issueRepos.data
+                    ?.filter(
+                      (repo) =>
+                        repo.permissions?.push ||
+                        repo.permissions?.admin ||
+                        repo.permissions?.maintain,
+                    )
+                    .map((repo) => (
+                      <Row
+                        key={repo.id}
+                        icon="book-outline"
+                        title={repo.name}
+                        subtitle={repo.full_name}
+                        onPress={() => {
+                          setIssueRepo(repo);
+                        }}
+                      />
+                    ))}
+                  {!issueRepos.data?.some(
+                    (repo) =>
+                      repo.permissions?.push ||
+                      repo.permissions?.admin ||
+                      repo.permissions?.maintain,
+                  ) && <Txt muted>No writable repositories on this page.</Txt>}
+                  <Pages
+                    page={issueRepoPage}
+                    setPage={setIssueRepoPage}
+                    next={issueRepos.data?.length === 50}
+                  />
+                </>
+              )}
+            </ScrollView>
+          )}
+        </Sheet>
         <View
           style={[
             s.tabbar,
@@ -1062,7 +1158,11 @@ function NativeRepository({
         ) : (
           <>
             {issues.data
-              ?.filter((i) => (tab === "pulls" || !i.pull_request) && i.title.toLowerCase().includes(search.toLowerCase()))
+              ?.filter(
+                (i) =>
+                  (tab === "pulls" || !i.pull_request) &&
+                  i.title.toLowerCase().includes(search.toLowerCase()),
+              )
               .map((i) => (
                 <Row
                   key={i.id}
@@ -1079,10 +1179,17 @@ function NativeRepository({
                   }
                 />
               ))}
-            {!issues.data?.filter((i) => tab === "pulls" || !i.pull_request).length && (
+            {!issues.data?.filter((i) => tab === "pulls" || !i.pull_request)
+              .length && (
               <View style={{ gap: 12 }}>
-                <Txt muted>{tab === "issues" ? "No issues here." : "No pull requests here."}</Txt>
-                {tab === "issues" && <Btn title="New issue" onPress={() => setCreate(true)} />}
+                <Txt muted>
+                  {tab === "issues"
+                    ? "No issues here."
+                    : "No pull requests here."}
+                </Txt>
+                {tab === "issues" && (
+                  <Btn title="New issue" onPress={() => setCreate(true)} />
+                )}
               </View>
             )}
             <Pages
@@ -1159,7 +1266,9 @@ function Composer({
   repo,
   onClose,
   onCreated,
+  embedded = false,
 }: {
+  embedded?: boolean;
   visible: boolean;
   repo: string;
   onClose: () => void;
@@ -1176,7 +1285,40 @@ function Composer({
       onCreated(i.number);
     },
   });
-  return (
+  const content = (
+    <ScrollView
+      contentContainerStyle={s.content}
+      keyboardShouldPersistTaps="handled"
+    >
+      <Txt>Title</Txt>
+      <TextInput
+        accessibilityLabel="Issue title"
+        value={heading}
+        onChangeText={setHeading}
+        style={[s.input, { color: colors.text, borderColor: colors.input }]}
+      />
+      <Txt>Description</Txt>
+      <CommentEditor
+        label="Issue description"
+        value={body}
+        onChangeText={setBody}
+        api={api}
+        repo={repo}
+        branch="HEAD"
+        colors={colors}
+      />
+      {mutation.error && <Problem error={mutation.error} />}
+      <Btn
+        title={mutation.isPending ? "Creating…" : "Create issue"}
+        primary
+        disabled={!heading.trim() || mutation.isPending}
+        onPress={() => mutation.mutate()}
+      />
+    </ScrollView>
+  );
+  return embedded ? (
+    content
+  ) : (
     <Sheet
       visible={visible}
       onClose={onClose}
@@ -1184,24 +1326,7 @@ function Composer({
       subtitle={repo}
       colors={colors}
     >
-      <ScrollView contentContainerStyle={s.content}>
-        <Txt>Title</Txt>
-        <TextInput
-          accessibilityLabel="Issue title"
-          value={heading}
-          onChangeText={setHeading}
-          style={[s.input, { color: colors.text, borderColor: colors.input }]}
-        />
-        <Txt>Description</Txt>
-        <CommentEditor label="Issue description" value={body} onChangeText={setBody} api={api} repo={repo} branch="HEAD" colors={colors} />
-        {mutation.error && <Problem error={mutation.error} />}
-        <Btn
-          title={mutation.isPending ? "Creating…" : "Create issue"}
-          primary
-          disabled={!heading.trim() || mutation.isPending}
-          onPress={() => mutation.mutate()}
-        />
-      </ScrollView>
+      {content}
     </Sheet>
   );
 }

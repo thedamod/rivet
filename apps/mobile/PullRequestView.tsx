@@ -1057,7 +1057,12 @@ export function NativePullRequest({
                 ))}
           {pager(timeline.data?.length === 50)}
           <View style={[styles.composer, { borderTopColor: colors.border }]}>
-            <CommentEditor label="Comment" value={body} onChangeText={setBody} {...markdownProps} />
+            <CommentEditor
+              label="Comment"
+              value={body}
+              onChangeText={setBody}
+              {...markdownProps}
+            />
             <View style={[styles.row, { justifyContent: "flex-end" }]}>
               {!pull &&
                 iconButton(
