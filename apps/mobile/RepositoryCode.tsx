@@ -19,7 +19,7 @@ import {
   type Content,
   type GitHubClient,
   type Repository,
-} from "@git-client/github";
+} from "@rivet/github";
 import { PierreViewer } from "./Viewer";
 import { NativeMarkdown } from "./Markdown";
 import { Media } from "./Media";

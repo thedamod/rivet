@@ -16,8 +16,8 @@ export default defineConfig(({ mode }) => ({
           "",
         );
         const session = createBrowserSessions(
-          process.env.GIT_CLIENT_GITHUB_CLIENT_ID ||
-            env.GIT_CLIENT_GITHUB_CLIENT_ID ||
+          process.env.RIVET_GITHUB_CLIENT_ID ||
+            env.RIVET_GITHUB_CLIENT_ID ||
             config.clientId,
         );
         server.middlewares.use("/api", async (req, res, next) => {
@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => ({
           const origin = req.headers.origin;
           if (
             (origin && origin !== `http://${req.headers.host}`) ||
-            req.headers["x-git-client"] !== "1"
+            req.headers["x-rivet"] !== "1"
           ) {
             res.writeHead(403).end();
             return;

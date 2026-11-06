@@ -1,5 +1,5 @@
 {
-  "name": "git-client",
+  "name": "rivet",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -8,13 +8,13 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev -w @git-client/web",
-    "desktop": "npm run dev -w @git-client/desktop",
-    "mobile": "npm run build:viewer && npm run start -w @git-client/mobile",
-    "build": "npm run build -w @git-client/web",
-    "typecheck": "tsc --noEmit && npm run typecheck -w @git-client/mobile",
+    "dev": "npm run dev -w @rivet/web",
+    "desktop": "npm run dev -w @rivet/desktop",
+    "mobile": "npm run build:viewer && npm run start -w @rivet/mobile",
+    "build": "npm run build -w @rivet/web",
+    "typecheck": "tsc --noEmit && npm run typecheck -w @rivet/mobile",
     "test": "tsx --test packages/github/src/*.test.ts scripts/*.test.ts",
-    "package:desktop": "npm run build && npm run package -w @git-client/desktop",
+    "package:desktop": "npm run build && npm run package -w @rivet/desktop",
     "build:viewer": "node scripts/build-native-viewer.mjs",
     "postinstall": "npm run build:viewer"
   },
@@ -26,5 +26,19 @@
     "prettier": "^3.9.10",
     "tsx": "^4.20.0",
     "typescript": "^5.9.3"
-  }
+  },
+  "description": "A focused GitHub client for desktop and mobile.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thedamod/rivet.git"
+  },
+  "homepage": "https://github.com/thedamod/rivet#readme",
+  "bugs": {
+    "url": "https://github.com/thedamod/rivet/issues"
+  },
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11"
+  },
+  "packageManager": "npm@11.16.0"
 }

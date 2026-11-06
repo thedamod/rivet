@@ -1,19 +1,20 @@
 {
   "expo": {
-    "name": "Git Client",
-    "slug": "git-client",
-    "scheme": "gitclient",
+    "name": "Rivet",
+    "slug": "rivet",
+    "scheme": "rivet",
     "version": "0.1.0",
     "orientation": "default",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "dev.gitclient.mobile"
+      "bundleIdentifier": "app.rivet.mobile"
     },
     "android": {
-      "package": "dev.gitclient.mobile"
+      "package": "app.rivet.mobile"
     },
     "plugins": ["expo-secure-store"],
-    "platforms": ["ios", "android"]
+    "platforms": ["ios", "android"],
+    "icon": "./assets/icon.png"
   }
 }

@@ -12,6 +12,7 @@ const { promisify } = require("node:util");
 const gateway = require("./gateway.cjs");
 const { cloneOptions } = require("./clone.cjs");
 const exec = promisify(execFile);
+app.setName("Rivet");
 let window;
 function trusted(event) {
   return (
@@ -39,7 +40,7 @@ app.whenReady().then(() => {
   );
   const { encryptedStorage } = require("./oauth-storage.cjs");
   const auth = createOAuthSession({
-    clientId: process.env.GIT_CLIENT_GITHUB_CLIENT_ID || config.clientId,
+    clientId: process.env.RIVET_GITHUB_CLIENT_ID || config.clientId,
     storage: encryptedStorage(
       path.join(app.getPath("userData"), "github-oauth.enc"),
       safeStorage,
@@ -50,8 +51,9 @@ app.whenReady().then(() => {
     height: 940,
     minWidth: 760,
     minHeight: 600,
-    title: "Git Client",
+    title: "Rivet",
     backgroundColor: "#0a0a0a",
+    icon: path.join(__dirname, "../assets/icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
       contextIsolation: true,

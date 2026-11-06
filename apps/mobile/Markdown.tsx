@@ -6,7 +6,7 @@ import {
   mimeType,
   type GitHubClient,
   type Content,
-} from "@git-client/github";
+} from "@rivet/github";
 import { PierreViewer } from "./Viewer";
 export function NativeMarkdown({
   children,

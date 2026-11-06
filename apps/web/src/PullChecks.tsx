@@ -8,7 +8,7 @@ import {
   ChevronDown,
   LockKeyhole,
 } from "lucide-react";
-import { checkLabel, type PullChecks as Checks } from "@git-client/github";
+import { checkLabel, type PullChecks as Checks } from "@rivet/github";
 import { Button } from "./ui/primitives";
 import { openExternal } from "./api";
 import { ErrorBox } from "./components";

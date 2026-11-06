@@ -6,7 +6,7 @@ import {
   GitPullRequestClosed,
   GitPullRequestDraft,
 } from "lucide-react";
-import type { Issue } from "@git-client/github";
+import type { Issue } from "@rivet/github";
 /** T3 pullRequestIcons.tsx uses a different glyph and tone for every PR state. */
 export function IssueGlyph({
   issue,

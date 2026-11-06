@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { Repository, Issue } from "@git-client/github";
+import type { Repository, Issue } from "@rivet/github";
 import { api } from "./api";
 export type AppRoute = {
   profile: string | null;
@@ -31,7 +31,7 @@ export function useAppHistory(route: AppRoute, restore: (r: AppRoute) => void) {
   const key = routeKey(route);
   useEffect(() => {
     const read = async () => {
-      const saved = history.state?.gitClientRoute as AppRoute | undefined;
+      const saved = history.state?.rivetRoute as AppRoute | undefined;
       if (saved) {
         depth.current = history.state.depth || 0;
         skip.current =
@@ -78,7 +78,7 @@ export function useAppHistory(route: AppRoute, restore: (r: AppRoute) => void) {
         next.view = parts[0];
       skip.current = routeKey(next);
       history.replaceState(
-        { gitClientRoute: next, depth: 0 },
+        { rivetRoute: next, depth: 0 },
         "",
         `#${routeKey(next)}${location.hash.includes("?") ? "?" + location.hash.split("?")[1] : ""}`,
       );
@@ -100,7 +100,7 @@ export function useAppHistory(route: AppRoute, restore: (r: AppRoute) => void) {
     }
     depth.current = (history.state?.depth || 0) + 1;
     history.pushState(
-      { gitClientRoute: current.current, depth: depth.current },
+      { rivetRoute: current.current, depth: depth.current },
       "",
       `#${key}`,
     );

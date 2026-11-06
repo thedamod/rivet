@@ -13,7 +13,7 @@ function createBrowserSessions(clientId) {
         sessions.delete(key);
       }
     }
-    let id = /(?:^|;\s*)git_client_session=([a-f0-9]{64})(?:;|$)/.exec(
+    let id = /(?:^|;\s*)rivet_session=([a-f0-9]{64})(?:;|$)/.exec(
       req.headers.cookie || "",
     )?.[1];
     if (!id || !sessions.has(id)) {
@@ -28,7 +28,7 @@ function createBrowserSessions(clientId) {
       });
       res.setHeader(
         "Set-Cookie",
-        `git_client_session=${id}; Path=/api; HttpOnly; SameSite=Strict`,
+        `rivet_session=${id}; Path=/api; HttpOnly; SameSite=Strict`,
       );
     }
     const session = sessions.get(id);

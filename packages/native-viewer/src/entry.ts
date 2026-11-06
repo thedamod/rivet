@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { MarkdownBody } from "@git-client/markdown";
+import { MarkdownBody } from "@rivet/markdown";
 import {
   File,
   FileDiff,
@@ -11,7 +11,7 @@ import { FileTree } from "@pierre/trees";
 import {
   repositoryFileIcons,
   mobileRepositoryTreeCSS,
-} from "@git-client/theme/fileTree";
+} from "@rivet/theme/fileTree";
 const root = document.getElementById("root")!;
 const data = (window as any).viewerData;
 const post = (value: unknown) =>

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fileFormat, mimeType, type Content } from "@git-client/github";
+import { fileFormat, mimeType, type Content } from "@rivet/github";
 import { api } from "./api";
 import { Loading, ErrorBox, External } from "./components";
 export function MediaPreview({ file, repo }: { file: Content; repo: string }) {

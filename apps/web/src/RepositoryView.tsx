@@ -4,7 +4,7 @@ import { Button } from "./ui/primitives";
 import { useOpenProfile } from "./navigation";
 import { RepositoryCode } from "./RepositoryCode";
 import { MediaPreview } from "./MediaPreview";
-import { fileFormat } from "@git-client/github";
+import { fileFormat } from "@rivet/github";
 import { CodeFile, CodeDiff, DirectoryTree } from "./Pierre";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -27,7 +27,7 @@ import {
   decodeContent,
   type Repository,
   type Content,
-} from "@git-client/github";
+} from "@rivet/github";
 import { api, openExternal } from "./api";
 import {
   CopyButton,

@@ -26,7 +26,7 @@ import {
   Send,
   RefreshCw,
 } from "lucide-react";
-import type { Issue, User, DiffFile } from "@git-client/github";
+import type { Issue, User, DiffFile } from "@rivet/github";
 import { api, openExternal } from "./api";
 import { Markdown, ErrorBox, Time } from "./components";
 import { Button } from "./ui/primitives";
@@ -109,7 +109,7 @@ export function IssueDetail({
     queryKey: ["pr-commits", repo, number],
     enabled: pull && tab === "timeline",
     queryFn: async () => {
-      const all: import("@git-client/github").Commit[] = [];
+      const all: import("@rivet/github").Commit[] = [];
       for (let page = 1; ; page++) {
         const batch = await api.pullCommits(repo, number, page);
         all.push(...batch);

@@ -1,7 +1,8 @@
+import { RivetMark } from "./RivetMark";
 import { useEffect, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Github, ExternalLink, X, LogOut } from "lucide-react";
-import type { OAuthStatus } from "@git-client/github/oauth";
+import { ExternalLink, X, LogOut } from "lucide-react";
+import type { OAuthStatus } from "@rivet/github/oauth";
 import { authAction, openExternal } from "./api";
 import { Button } from "./ui/primitives";
 import "./auth.css";
@@ -109,8 +110,8 @@ export function AuthGate({ children }: { children: ReactNode }) {
   return (
     <main className="auth-page">
       <div className="auth-content">
-        <Github size={36} aria-hidden />
-        <h1>Git Client</h1>
+        <RivetMark size={48} />
+        <h1>Rivet</h1>
         {status?.pending ? (
           <>
             <code className="auth-code" aria-label="GitHub verification code">
@@ -162,7 +163,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
                   }
             }
           >
-            <Github />{" "}
+            <RivetMark size={18} />{" "}
             {busy
               ? "Connecting…"
               : !status && error

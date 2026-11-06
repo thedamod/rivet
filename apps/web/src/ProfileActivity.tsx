@@ -14,7 +14,7 @@ import {
   profileMonths,
   profilePeriod,
   type ProfileExtras,
-} from "@git-client/github";
+} from "@rivet/github";
 import { Button, Hint } from "./ui/primitives";
 import { openExternal } from "./api";
 const monthLabel = (month: string) =>

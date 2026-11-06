@@ -1,5 +1,5 @@
-import type { OAuthStatus } from "@git-client/github/oauth";
-import { createClient } from "@git-client/github";
+import type { OAuthStatus } from "@rivet/github/oauth";
+import { createClient } from "@rivet/github";
 declare global {
   interface Window {
     desktop?: {
@@ -24,7 +24,7 @@ export async function authAction(action: AuthAction): Promise<OAuthStatus> {
   if (window.desktop) return window.desktop.auth(action);
   const response = await fetch("/api/auth/" + action, {
     method: action === "status" ? "GET" : "POST",
-    headers: { "X-Git-Client": "1" },
+    headers: { "X-Rivet": "1" },
   });
   const body = await response.json();
   if (!response.ok) throw new Error(body.message || "GitHub sign-in failed.");
@@ -44,7 +44,7 @@ export const api = createClient(async (path, init) => {
   }
   const response = await fetch("/api/github" + path, {
     ...init,
-    headers: { "Content-Type": "application/json", "X-Git-Client": "1" },
+    headers: { "Content-Type": "application/json", "X-Rivet": "1" },
   });
   if (response.status === 401)
     window.dispatchEvent(new Event("github-signed-out"));

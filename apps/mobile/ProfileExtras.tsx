@@ -16,7 +16,7 @@ import {
   profilePeriod,
   type GitHubClient,
   type Repository,
-} from "@git-client/github";
+} from "@rivet/github";
 import { AppIcon, type AppIconName } from "./AppIcon";
 import { MenuView } from "./Menu";
 const monthLabel = (month: string) =>

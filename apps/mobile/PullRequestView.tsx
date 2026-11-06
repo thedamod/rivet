@@ -3,9 +3,9 @@ import { NativeComment, NativeComments } from "./NativeComments";
 import { SvgUri } from "react-native-svg";
 import { Sheet } from "./Sheet";
 import { MenuView } from "./Menu";
-import { githubImagePath, mimeType, type Content } from "@git-client/github";
+import { githubImagePath, mimeType, type Content } from "@rivet/github";
 import { NativePullMerge } from "./PullMerge";
-import { checkLabel } from "@git-client/github";
+import { checkLabel } from "@rivet/github";
 import { issueIcon } from "./IssueStatus";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -22,7 +22,7 @@ import {
 } from "react-native";
 import { AppIcon } from "./AppIcon";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { GitHubClient, Issue, User } from "@git-client/github";
+import type { GitHubClient, Issue, User } from "@rivet/github";
 import { NativeMarkdown } from "./Markdown";
 import { PierreViewer } from "./Viewer";
 
@@ -145,7 +145,7 @@ export function NativePullRequest({
     queryKey: ["pr-commits", repo, number],
     enabled: pull && tab === "timeline",
     queryFn: async () => {
-      const all: import("@git-client/github").Commit[] = [];
+      const all: import("@rivet/github").Commit[] = [];
       for (let page = 1; ; page++) {
         const r = await api.pullCommits(repo, number, page);
         all.push(...r);

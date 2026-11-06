@@ -8,7 +8,7 @@ import {
   treeFiles,
   type Repository,
   type Content,
-} from "@git-client/github";
+} from "@rivet/github";
 import { api } from "./api";
 import { CodeFile, DirectoryTree } from "./Pierre";
 import {

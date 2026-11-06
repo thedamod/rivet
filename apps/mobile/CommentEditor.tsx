@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import type { GitHubClient } from "@git-client/github";
+import type { GitHubClient } from "@rivet/github";
 import IconHeading from "@tabler/icons-react-native/IconHeading";
 import IconBold from "@tabler/icons-react-native/IconBold";
 import IconItalic from "@tabler/icons-react-native/IconItalic";

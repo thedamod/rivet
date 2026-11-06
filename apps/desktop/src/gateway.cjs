@@ -39,7 +39,7 @@ async function request(path, options = {}, token) {
         Authorization: "Bearer " + token,
         "X-GitHub-Api-Version": "2022-11-28",
         "Content-Type": "application/json",
-        "User-Agent": "Git-Client",
+        "User-Agent": "Rivet",
       },
     });
     return {

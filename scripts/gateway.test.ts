@@ -15,7 +15,7 @@ test("development API requires its request marker and same origin", async () => 
   assert.equal(
     (
       await fetch(url, {
-        headers: { "X-Git-Client": "1", Origin: "https://evil.test" },
+        headers: { "X-Rivet": "1", Origin: "https://evil.test" },
       })
     ).status,
     403,
@@ -39,17 +39,17 @@ test("OAuth development endpoints enforce origin, marker, and HTTP method", asyn
     (
       await fetch(url + "begin", {
         method: "POST",
-        headers: { "X-Git-Client": "1", Origin: "https://evil.test" },
+        headers: { "X-Rivet": "1", Origin: "https://evil.test" },
       })
     ).status,
     403,
   );
   assert.equal(
-    (await fetch(url + "logout", { headers: { "X-Git-Client": "1" } })).status,
+    (await fetch(url + "logout", { headers: { "X-Rivet": "1" } })).status,
     405,
   );
   const response = await fetch(url + "status", {
-    headers: { "X-Git-Client": "1" },
+    headers: { "X-Rivet": "1" },
   });
   assert.equal(response.status, 200);
   assert.match(

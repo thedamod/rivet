@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GitMerge } from "lucide-react";
 import { Button, Modal } from "./ui/primitives";
 import { api } from "./api";
-import type { Issue } from "@git-client/github";
+import type { Issue } from "@rivet/github";
 import { ErrorBox } from "./components";
 export function PullMerge({
   repo,

@@ -12,9 +12,9 @@ import {
   MapPin,
   Building2 as Buildings,
   Link as LinkIcon,
-  Github as GithubLogo,
+  FolderGit2,
 } from "lucide-react";
-import { decodeContent, type Repository } from "@git-client/github";
+import { decodeContent, type Repository } from "@rivet/github";
 import { api, openExternal } from "./api";
 import { Empty, ErrorBox, Loading, Markdown, Pager, Time } from "./components";
 import { useOpenProfile } from "./navigation";
@@ -129,7 +129,7 @@ export function ProfileView({
                 </Button>
               )}
               <Button onClick={() => openExternal(user.data.html_url)}>
-                <GithubLogo size={16} />
+                <BookOpen size={16} />
                 <span>{user.data.login}</span>
                 <ArrowSquareOut size={12} />
               </Button>
@@ -143,7 +143,7 @@ export function ProfileView({
             >
               {[
                 ["overview", "Overview", BookOpen],
-                ["repositories", "Repositories", GithubLogo],
+                ["repositories", "Repositories", FolderGit2],
                 ["starred", "Starred", Star],
                 ["followers", "Followers", Users],
               ].map(([id, label, Icon]) => (
@@ -270,7 +270,7 @@ function ProfileExtrasView({
   loading,
   onRepository,
 }: {
-  data?: import("@git-client/github").ProfileExtras;
+  data?: import("@rivet/github").ProfileExtras;
   error: unknown;
   loading: boolean;
   onRepository: (r: Repository) => void;

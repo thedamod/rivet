@@ -17,7 +17,7 @@ import {
 import {
   T3_CODE_DARK_THEME_COLORS as dark,
   T3_CODE_LIGHT_THEME_COLORS as light,
-} from "@git-client/theme";
+} from "@rivet/theme";
 import { AppIcon, type AppIconName } from "./AppIcon";
 const images: Record<string, AppIconName> = {
   btn_star: "star-outline",

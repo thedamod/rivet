@@ -16,7 +16,7 @@ import {
   decodeContent,
   type GitHubClient,
   type Repository,
-} from "@git-client/github";
+} from "@rivet/github";
 import { NativeMarkdown } from "./Markdown";
 type Palette = {
   canvas: string;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Platform, Pressable, Text, View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { GitHubClient, Issue } from "@git-client/github";
+import type { GitHubClient, Issue } from "@rivet/github";
 import { AppIcon } from "./AppIcon";
 export function NativePullMerge({
   api,

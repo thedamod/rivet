@@ -1,6 +1,6 @@
 import { useId, useState, type ReactNode } from "react";
 import { Search, X, BookOpen, UserRound } from "lucide-react";
-import type { Repository } from "@git-client/github";
+import type { Repository } from "@rivet/github";
 import { Button } from "./ui/primitives";
 export function NavbarSearch({
   value,

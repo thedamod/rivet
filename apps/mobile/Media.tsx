@@ -10,7 +10,7 @@ import {
   mimeType,
   type Content,
   type GitHubClient,
-} from "@git-client/github";
+} from "@rivet/github";
 export function Media({
   file,
   api,
@@ -50,7 +50,7 @@ export function Media({
         } else {
           cache = new File(
             Paths.cache,
-            `git-client-${file.sha}-${file.name.replace(/[^\w.-]/g, "_")}`,
+            `rivet-${file.sha}-${file.name.replace(/[^\w.-]/g, "_")}`,
           );
           cache.write(Uint8Array.from(atob(data), (c) => c.charCodeAt(0)));
           if (active) setUri(cache.uri);

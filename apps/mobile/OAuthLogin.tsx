@@ -1,6 +1,7 @@
+import { RivetMark } from "./RivetMark";
 import { useEffect, useState } from "react";
 import { Linking, Pressable, Text, View } from "react-native";
-import type { OAuthStatus } from "@git-client/github/oauth";
+import type { OAuthStatus } from "@rivet/github/oauth";
 import { oauth } from "./oauth";
 import { AppIcon } from "./AppIcon";
 export function OAuthLogin({
@@ -103,7 +104,7 @@ export function OAuthLogin({
           opacity: busy || status?.configured === false ? 0.5 : 1,
         }}
       >
-        <AppIcon name="logo-github" size={20} color="#fff" />
+        <RivetMark size={20} />
         <Text
           style={{ fontFamily: "GeistMedium", color: "#fff", fontSize: 15 }}
         >

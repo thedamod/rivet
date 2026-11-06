@@ -1,5 +1,5 @@
 {
-  "name": "@git-client/desktop",
+  "name": "@rivet/desktop",
   "version": "0.1.0",
   "private": true,
   "main": "src/main.cjs",
@@ -13,14 +13,15 @@
     "electron-builder": "^26.0.0"
   },
   "build": {
-    "appId": "dev.gitclient.desktop",
-    "productName": "Git Client",
+    "appId": "app.rivet.desktop",
+    "productName": "Rivet",
     "directories": {
       "output": "../../release"
     },
     "files": [
       "src/**",
-      "package.json"
+      "package.json",
+      "assets/**"
     ],
     "extraResources": [
       {
@@ -42,7 +43,9 @@
     ],
     "electronVersion": "45.2.3",
     "electronDist": "../../node_modules/electron/dist",
-    "executableName": "git-client"
+    "executableName": "rivet",
+    "icon": "assets/icon.png"
   },
-  "description": "A GitHub desktop client"
+  "description": "Rivet, a focused GitHub client for desktop.",
+  "productName": "Rivet"
 }

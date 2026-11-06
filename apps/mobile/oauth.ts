@@ -1,5 +1,5 @@
 import * as SecureStore from "expo-secure-store";
-import { createOAuthSession } from "@git-client/github/oauth";
+import { createOAuthSession } from "@rivet/github/oauth";
 import config from "../../github-oauth.json";
 const key = "github-oauth-session-v1";
 export const oauth = createOAuthSession({

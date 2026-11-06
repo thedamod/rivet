@@ -1,5 +1,5 @@
 {
-  "name": "@git-client/github",
+  "name": "@rivet/github",
   "version": "0.1.0",
   "private": true,
   "type": "module",

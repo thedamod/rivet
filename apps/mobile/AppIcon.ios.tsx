@@ -11,11 +11,7 @@ type Props = {
 import { SymbolView, type SFSymbol } from "expo-symbols";
 function Symbol({ name, size = 18, color, style }: Props) {
   const glyph = icons[name];
-  if (
-    !name.startsWith("git-") &&
-    name !== "documents-outline" &&
-    name !== "logo-github"
-  )
+  if (!name.startsWith("git-") && name !== "documents-outline")
     return (
       <SymbolView
         name={glyph.sf as SFSymbol}

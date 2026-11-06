@@ -1,3 +1,4 @@
+import { RivetMark } from "./RivetMark";
 import { SignOut } from "./AuthGate";
 import { useAppHistory } from "./useAppHistory";
 import { IssueGlyph } from "./ui/status";
@@ -9,7 +10,6 @@ import { ProfileNavigation } from "./navigation";
 import { useEffect, useState, useDeferredValue, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Github as GithubLogo,
   BookOpen,
   Star,
   GitPullRequestArrow as GitPullRequest,
@@ -29,7 +29,7 @@ import {
   ArrowLeft,
   ExternalLink as ArrowSquareOut,
 } from "lucide-react";
-import type { Repository, Issue } from "@git-client/github";
+import type { Repository, Issue } from "@rivet/github";
 import { api, openExternal } from "./api";
 import { Empty, ErrorBox, Loading, Pager, Time } from "./components";
 import { RepositoryView } from "./RepositoryView";
@@ -84,11 +84,11 @@ export function App() {
   const [state, setState] = useState("open");
 
   const [theme, setTheme] = useState(
-    () => localStorage.getItem("git-client-theme") || "dark",
+    () => localStorage.getItem("rivet-theme") || "dark",
   );
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem("git-client-theme", theme);
+    localStorage.setItem("rivet-theme", theme);
   }, [theme]);
   useEffect(() => {
     function key(e: KeyboardEvent) {
@@ -181,6 +181,9 @@ export function App() {
             >
               <ArrowLeft size={16} />
             </Button>
+            <span title="Rivet" aria-label="Rivet">
+              <RivetMark size={22} />
+            </span>
             <nav className="top-navigation" aria-label="Primary navigation">
               {navigation.map(([key, label, Icon]) => (
                 <Button

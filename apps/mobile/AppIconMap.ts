@@ -6,7 +6,6 @@ import IconArrowRight from "@tabler/icons-react-native/IconArrowRight";
 import IconAt from "@tabler/icons-react-native/IconAt";
 import IconBell from "@tabler/icons-react-native/IconBell";
 import IconBook from "@tabler/icons-react-native/IconBook";
-import IconBrandGithub from "@tabler/icons-react-native/IconBrandGithub";
 import IconBuilding from "@tabler/icons-react-native/IconBuilding";
 import IconChecks from "@tabler/icons-react-native/IconChecks";
 import IconChevronDown from "@tabler/icons-react-native/IconChevronDown";
@@ -94,10 +93,6 @@ export const icons = {
   "log-out-outline": {
     sf: "rectangle.portrait.and.arrow.right",
     Icon: IconLogout,
-  },
-  "logo-github": {
-    sf: "chevron.left.forwardslash.chevron.right",
-    Icon: IconBrandGithub,
   },
   "notifications-outline": { sf: "bell", Icon: IconBell },
   "open-outline": { sf: "safari", Icon: IconExternalLink },

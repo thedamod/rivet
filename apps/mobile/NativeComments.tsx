@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Pressable } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import type { GitHubClient, Comment } from "@git-client/github";
+import type { GitHubClient, Comment } from "@rivet/github";
 import { NativeMarkdown } from "./Markdown";
 import { AppIcon } from "./AppIcon";
 import { MenuView } from "./Menu";

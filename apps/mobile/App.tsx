@@ -1,3 +1,4 @@
+import { RivetMark } from "./RivetMark";
 import { oauth } from "./oauth";
 import { OAuthLogin } from "./OAuthLogin";
 import { CommentEditor } from "./CommentEditor";
@@ -42,11 +43,11 @@ import {
   tokenTransport,
   type GitHubClient,
   type Repository,
-} from "@git-client/github";
+} from "@rivet/github";
 import {
   T3_CODE_DARK_THEME_COLORS as dark,
   T3_CODE_LIGHT_THEME_COLORS as light,
-} from "@git-client/theme";
+} from "@rivet/theme";
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60000, retry: 1 } },
 });
@@ -136,8 +137,8 @@ function Session() {
           <ActivityIndicator style={{ flex: 1 }} color={colors.text} />
         ) : !authenticated ? (
           <ScrollView contentContainerStyle={s.login}>
-            <AppIcon name="logo-github" size={44} color={colors.text} />
-            <Txt style={s.loginTitle}>Git Client</Txt>
+            <RivetMark size={48} color={colors.text} />
+            <Txt style={s.loginTitle}>Rivet</Txt>
 
             <OAuthLogin
               colors={colors}
@@ -451,7 +452,7 @@ function Workspace({
               />
             </Pressable>
           ) : (
-            <AppIcon name="logo-github" size={23} color={colors.text} />
+            <RivetMark size={24} color={colors.text} />
           )}
           <TextInput
             accessibilityLabel="Search current view"

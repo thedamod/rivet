@@ -1,6 +1,6 @@
-import "@git-client/markdown/styles.css";
+import "@rivet/markdown/styles.css";
 import { Button, Hint } from "./ui/primitives";
-import { MarkdownBody } from "@git-client/markdown";
+import { MarkdownBody } from "@rivet/markdown";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "./api";
 import {
@@ -8,7 +8,7 @@ import {
   imageDimensions,
   mimeType,
   type Content,
-} from "@git-client/github";
+} from "@rivet/github";
 import { useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";

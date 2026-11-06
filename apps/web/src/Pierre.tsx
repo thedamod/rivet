@@ -10,9 +10,9 @@ import { FileTree, useFileTree } from "@pierre/trees/react";
 import {
   repositoryFileIcons,
   repositoryTreeCSS,
-} from "@git-client/theme/fileTree";
+} from "@rivet/theme/fileTree";
 import "./file-tree.css";
-import type { Content } from "@git-client/github";
+import type { Content } from "@rivet/github";
 const fontStyles = {
   "--diffs-font-family": '"Geist Mono", monospace',
   "--diffs-header-font-family": "Geist, sans-serif",

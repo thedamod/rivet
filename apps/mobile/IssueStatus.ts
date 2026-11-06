@@ -1,4 +1,4 @@
-import type { Issue } from "@git-client/github";
+import type { Issue } from "@rivet/github";
 import type { AppIconName } from "./AppIcon";
 export function issueIcon(
   issue: Issue,
