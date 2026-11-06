@@ -8,3 +8,9 @@ context/
 release/
 *.tsbuildinfo
 apps/mobile/generated/
+.vercel/
+credentials.json
+*.jks
+*.keystore
+.vercel
+.env*

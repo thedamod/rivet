@@ -1,3 +1,14 @@
+export interface OAuthPrivateState {
+  clientId: string;
+  credentials: OAuthCredentials | null;
+  pending: null | {
+    deviceCode: string;
+    userCode: string;
+    interval: number;
+    expiresAt: number;
+    nextPollAt: number;
+  };
+}
 export interface OAuthCredentials {
   clientId: string;
   accessToken: string;
@@ -17,6 +28,7 @@ export interface OAuthStatus {
 }
 export function createOAuthSession(options: {
   clientId: string;
+  initialState?: OAuthPrivateState;
   storage?: {
     load(): Promise<OAuthCredentials | null>;
     save(value: OAuthCredentials | null): Promise<void>;
@@ -29,7 +41,8 @@ export function createOAuthSession(options: {
   cancel(): Promise<OAuthStatus>;
   logout(): Promise<OAuthStatus>;
   status(): Promise<OAuthStatus>;
-  accessToken(): Promise<string | null>;
+  accessToken(options?: { refresh?: boolean }): Promise<string | null>;
+  exportState(): Promise<OAuthPrivateState>;
   invalidate(token: string | null): Promise<void>;
 };
 export const scopes: string;

@@ -3,6 +3,7 @@ const scopes = "repo read:user read:org notifications";
 function createOAuthSession({
   clientId,
   storage,
+  initialState,
   fetch: fetcher = globalThis.fetch,
   now = Date.now,
 }) {
@@ -19,10 +20,15 @@ function createOAuthSession({
     return write;
   };
   const ready = Promise.resolve()
-    .then(() => storage?.load())
+    .then(() => (storage ? storage.load() : initialState?.credentials))
     .then((value) => {
       if (value?.clientId === clientId && typeof value.accessToken === "string")
         credentials = value;
+      if (
+        initialState?.clientId === clientId &&
+        initialState.pending?.expiresAt > now()
+      )
+        pending = initialState.pending;
     })
     .catch(() => {
       /* An unreadable saved session can be replaced by a new sign-in. */
@@ -93,11 +99,12 @@ function createOAuthSession({
     await persist(null);
     return snapshot();
   }
-  async function accessToken() {
+  async function accessToken({ refresh = true } = {}) {
     await ready;
     if (!credentials) return null;
     if (!credentials.expiresAt || credentials.expiresAt > now() + 60000)
       return credentials.accessToken;
+    if (!refresh) return null;
     if (refreshing) return refreshing;
     const current = credentials;
     const version = generation;
@@ -232,6 +239,11 @@ function createOAuthSession({
     poll,
     logout,
     accessToken,
+    // Server adapters may seal this private state; never expose it through a renderer API.
+    exportState: async () => {
+      await ready;
+      return { clientId, credentials, pending };
+    },
     invalidate: async (token) => {
       await ready;
       if (credentials?.accessToken === token) await logout();

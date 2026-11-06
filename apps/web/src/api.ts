@@ -20,7 +20,18 @@ declare global {
   }
 }
 type AuthAction = "status" | "begin" | "poll" | "cancel" | "logout";
+let authQueue: Promise<unknown> = Promise.resolve();
+async function withAuthLock<T>(work: () => Promise<T>): Promise<T> {
+  if (navigator.locks) return navigator.locks.request("rivet-oauth", work);
+  const next = authQueue.then(work, work);
+  authQueue = next.catch(() => {});
+  return next;
+}
 export async function authAction(action: AuthAction): Promise<OAuthStatus> {
+  if (window.desktop) return window.desktop.auth(action);
+  return withAuthLock(() => browserAuthAction(action));
+}
+async function browserAuthAction(action: AuthAction): Promise<OAuthStatus> {
   if (window.desktop) return window.desktop.auth(action);
   const response = await fetch("/api/auth/" + action, {
     method: action === "status" ? "GET" : "POST",
@@ -42,10 +53,29 @@ export const api = createClient(async (path, init) => {
       headers: r.headers,
     });
   }
-  const response = await fetch("/api/github" + path, {
-    ...init,
-    headers: { "Content-Type": "application/json", "X-Rivet": "1" },
-  });
+  const request = () =>
+    fetch("/api/github" + path, {
+      ...init,
+      headers: { "Content-Type": "application/json", "X-Rivet": "1" },
+    });
+  let response = await request();
+  if (
+    response.status === 409 &&
+    (
+      await response
+        .clone()
+        .json()
+        .catch(() => ({}))
+    ).code === "SESSION_REFRESH_REQUIRED"
+  ) {
+    const status = await authAction("status");
+    if (status.authenticated) response = await request();
+    else
+      response = new Response(
+        JSON.stringify({ message: "Sign in with GitHub to continue." }),
+        { status: 401 },
+      );
+  }
   if (response.status === 401)
     window.dispatchEvent(new Event("github-signed-out"));
   return response;
