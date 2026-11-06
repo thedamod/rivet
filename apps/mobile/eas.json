@@ -1,0 +1,28 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "ELECTRON_SKIP_BINARY_DOWNLOAD": "1"
+      },
+      "node": "24.18.0"
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "ELECTRON_SKIP_BINARY_DOWNLOAD": "1"
+      },
+      "node": "24.18.0"
+    }
+  }
+}

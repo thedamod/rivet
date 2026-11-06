@@ -15,6 +15,12 @@
     },
     "plugins": ["expo-secure-store"],
     "platforms": ["ios", "android"],
-    "icon": "./assets/icon.png"
+    "icon": "./assets/icon.png",
+    "owner": "avenire",
+    "extra": {
+      "eas": {
+        "projectId": "361b3d36-4622-47fc-ad48-f9d10adbfea8"
+      }
+    }
   }
 }

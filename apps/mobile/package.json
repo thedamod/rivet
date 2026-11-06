@@ -8,7 +8,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "typecheck": "tsc --noEmit",
-    "export": "expo export --platform all --output-dir dist/native"
+    "export": "expo export --platform all --output-dir dist/native",
+    "eas-build-post-install": "npm run build:viewer --prefix ../.."
   },
   "dependencies": {
     "@expo-google-fonts/geist": "^0.4.2",
