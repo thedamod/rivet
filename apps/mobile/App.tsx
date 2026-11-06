@@ -1,3 +1,5 @@
+import { oauth } from "./oauth";
+import { OAuthLogin } from "./OAuthLogin";
 import { CommentEditor } from "./CommentEditor";
 import { BackNavigation } from "./BackNavigation";
 import { issueIcon } from "./IssueStatus";
@@ -27,7 +29,6 @@ import {
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import * as SecureStore from "expo-secure-store";
 import { AppIcon } from "./AppIcon";
 import {
   QueryClient,
@@ -70,38 +71,55 @@ function Session() {
     GeistSemiBold: require("@expo-google-fonts/geist/600SemiBold/Geist_600SemiBold.ttf"),
     GeistMono: require("@expo-google-fonts/geist-mono/400Regular/GeistMono_400Regular.ttf"),
   });
-  const [token, setToken] = useState<string | null>(null);
+  const [authenticated, setAuthenticated] = useState(false);
   const [ready, setReady] = useState(false);
-  const [draft, setDraft] = useState("");
   const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
   const [mode, setMode] = useState<"dark" | "light">("dark");
   const colors = mode === "dark" ? dark : light;
-  const api = useMemo(() => createClient(tokenTransport(token || "")), [token]);
+  const api = useMemo(
+    () =>
+      createClient(async (path, init) => {
+        const token = await oauth.accessToken();
+        if (!token) {
+          queryClient.clear();
+          setAuthenticated(false);
+          return new Response(
+            JSON.stringify({ message: "Sign in with GitHub to continue." }),
+            { status: 401 },
+          );
+        }
+        const response = await tokenTransport(token)(path, init);
+        if (response.status === 401) {
+          await oauth.invalidate(token);
+          queryClient.clear();
+          setAuthenticated(false);
+        }
+        return response;
+      }),
+    [],
+  );
   useEffect(() => {
-    SecureStore.getItemAsync("github-token")
-      .then(setToken)
-      .catch(() => setError("Secure storage is unavailable on this device."))
-      .finally(() => setReady(true));
+    let active = true;
+    oauth
+      .status()
+      .then((s) => {
+        if (active) setAuthenticated(s.authenticated);
+      })
+      .catch(() => {
+        if (active) setError("Could not restore your GitHub session.");
+      })
+      .finally(() => {
+        if (active) setReady(true);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
-  async function login() {
-    setBusy(true);
-    setError("");
-    try {
-      await createClient(tokenTransport(draft.trim())).viewer();
-      await SecureStore.setItemAsync("github-token", draft.trim());
-      setToken(draft.trim());
-      setDraft("");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Sign in failed");
-    } finally {
-      setBusy(false);
-    }
-  }
   async function logout() {
     try {
-      await SecureStore.deleteItemAsync("github-token");
-      setToken(null);
+      await queryClient.cancelQueries();
+      await oauth.logout();
+      setAuthenticated(false);
       queryClient.clear();
     } catch {
       Alert.alert(
@@ -116,51 +134,21 @@ function Session() {
         <StatusBar style={mode === "dark" ? "light" : "dark"} />
         {!ready || !fontsReady ? (
           <ActivityIndicator style={{ flex: 1 }} color={colors.text} />
-        ) : !token ? (
+        ) : !authenticated ? (
           <ScrollView contentContainerStyle={s.login}>
             <AppIcon name="logo-github" size={44} color={colors.text} />
             <Txt style={s.loginTitle}>Git Client</Txt>
 
-            <Txt style={{ marginTop: 35 }}>Personal access token</Txt>
-            <TextInput
-              accessibilityLabel="GitHub personal access token"
-              secureTextEntry
-              autoCapitalize="none"
-              autoCorrect={false}
-              value={draft}
-              onChangeText={setDraft}
-              placeholder="github_pat_…"
-              placeholderTextColor={colors.placeholder}
-              style={[
-                s.input,
-                {
-                  backgroundColor: colors.surface,
-                  borderColor: colors.input,
-                  color: colors.text,
-                },
-              ]}
+            <OAuthLogin
+              colors={colors}
+              onConnected={() => {
+                setError("");
+                setAuthenticated(true);
+              }}
             />
-            <Txt muted>
-              Use a token with repository read access. Creating issues and
-              comments needs write access; starring needs user starring
-              permission.
-            </Txt>
             {!!error && (
               <Txt style={{ color: colors.errorForeground }}>{error}</Txt>
             )}
-            <Btn
-              title={busy ? "Connecting…" : "Connect to GitHub"}
-              onPress={login}
-              disabled={busy || !draft.trim()}
-              primary
-            />
-            <Btn
-              title="Create a token on GitHub"
-              onPress={() =>
-                Linking.openURL("https://github.com/settings/tokens?type=beta")
-              }
-            />
-            <Txt muted>Your token is kept in your device’s secure storage.</Txt>
           </ScrollView>
         ) : (
           <Workspace
@@ -640,7 +628,7 @@ function Workspace({
                   onPress={() =>
                     Alert.alert(
                       "Sign out?",
-                      "Remove the GitHub token from this device?",
+                      "Sign out of GitHub on this device?",
                       [
                         { text: "Cancel", style: "cancel" },
                         {
