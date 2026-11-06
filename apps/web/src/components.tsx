@@ -1,3 +1,4 @@
+import "@git-client/markdown/styles.css";
 import { Button, Hint } from "./ui/primitives";
 import { MarkdownBody } from "@git-client/markdown";
 import { useQuery } from "@tanstack/react-query";

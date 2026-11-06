@@ -1,0 +1,85 @@
+/* Shared by the desktop renderer and the offline native WebView. */
+.markdown {
+  --syntax-keyword: #c4a0f5;
+  --syntax-string: #9ad1a5;
+  --syntax-number: #e4ba85;
+  --syntax-function: #9ac8ff;
+  --syntax-comment: #818181;
+  --syntax-variable: #f0a3ae;
+}
+[data-theme="light"] .markdown {
+  --syntax-keyword: #8250a8;
+  --syntax-string: #116329;
+  --syntax-number: #953800;
+  --syntax-function: #0550ae;
+  --syntax-comment: #6e7781;
+  --syntax-variable: #a40e26;
+}
+.markdown hr {
+  height: 1px;
+  min-height: 0;
+  border: 0;
+  padding: 0;
+  margin: 20px 0;
+  background: var(--border, #292929);
+}
+[data-theme="light"] .markdown hr {
+  background: var(--border, #e4e4e7);
+}
+.markdown pre {
+  tab-size: 2;
+}
+.markdown pre code.hljs {
+  display: block;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  white-space: pre;
+}
+.markdown .hljs-comment,
+.markdown .hljs-quote {
+  color: var(--syntax-comment);
+}
+.markdown .hljs-keyword,
+.markdown .hljs-selector-tag,
+.markdown .hljs-meta .hljs-keyword,
+.markdown .hljs-literal {
+  color: var(--syntax-keyword);
+}
+.markdown .hljs-string,
+.markdown .hljs-regexp,
+.markdown .hljs-addition,
+.markdown .hljs-meta .hljs-string {
+  color: var(--syntax-string);
+}
+.markdown .hljs-number,
+.markdown .hljs-attr,
+.markdown .hljs-symbol,
+.markdown .hljs-bullet {
+  color: var(--syntax-number);
+}
+.markdown .hljs-title,
+.markdown .hljs-built_in,
+.markdown .hljs-type,
+.markdown .hljs-section {
+  color: var(--syntax-function);
+}
+.markdown .hljs-variable,
+.markdown .hljs-template-variable,
+.markdown .hljs-tag,
+.markdown .hljs-name,
+.markdown .hljs-deletion {
+  color: var(--syntax-variable);
+}
+.markdown .hljs-emphasis {
+  font-style: italic;
+}
+.markdown .hljs-strong {
+  font-weight: 600;
+}
+
+/* Native WebView controls share the app focus treatment. */
+*:focus-visible {
+  outline: none;
+  box-shadow: none;
+}

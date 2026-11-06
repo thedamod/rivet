@@ -2,6 +2,7 @@ import React from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import rehypeHighlight from "rehype-highlight";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 const schema = {
   ...defaultSchema,
@@ -34,7 +35,21 @@ export function MarkdownBody({
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeRaw, [rehypeSanitize, schema]]}
+      rehypePlugins={[
+        rehypeRaw,
+        [rehypeSanitize, schema],
+        [
+          rehypeHighlight,
+          {
+            detect: false,
+            aliases: {
+              javascript: ["jsx"],
+              typescript: ["tsx"],
+              bash: ["shell", "console"],
+            },
+          },
+        ],
+      ]}
       components={components}
       urlTransform={(url) => {
         try {
