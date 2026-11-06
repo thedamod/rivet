@@ -1,0 +1,10 @@
+{
+  "name": "@git-client/theme",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./fileTree": "./src/fileTree.ts"
+  }
+}

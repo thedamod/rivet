@@ -1,0 +1,23 @@
+/* Keep the surrounding navigation still while the explorer changes modes. */
+.repository-explorer {
+  view-transition-name: repository-explorer;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(repository-explorer),
+::view-transition-new(repository-explorer) {
+  animation-duration: 240ms;
+  animation-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(repository-explorer),
+  ::view-transition-new(repository-explorer) {
+    animation-duration: 0s;
+  }
+}

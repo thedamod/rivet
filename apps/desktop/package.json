@@ -1,0 +1,40 @@
+{
+  "name": "@git-client/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/main.cjs",
+  "scripts": {
+    "dev": "node ../../scripts/desktop.mjs",
+    "package": "electron-builder --dir",
+    "prepackage": "node -e \"require('electron')\""
+  },
+  "devDependencies": {
+    "electron": "45.2.3",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "dev.gitclient.desktop",
+    "productName": "Git Client",
+    "directories": {
+      "output": "../../release"
+    },
+    "files": [
+      "src/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../web/dist",
+        "to": "web"
+      },
+      {
+        "from": "../../THIRD_PARTY_NOTICES.md",
+        "to": "THIRD_PARTY_NOTICES.md"
+      }
+    ],
+    "electronVersion": "45.2.3",
+    "electronDist": "../../node_modules/electron/dist",
+    "executableName": "git-client"
+  },
+  "description": "A GitHub desktop client"
+}

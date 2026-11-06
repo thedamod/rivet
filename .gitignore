@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.expo/
+.env
+.env.*
+!.env.example
+context/
+release/
+*.tsbuildinfo
+apps/mobile/generated/

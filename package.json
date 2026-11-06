@@ -1,0 +1,30 @@
+{
+  "name": "git-client",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @git-client/web",
+    "desktop": "npm run dev -w @git-client/desktop",
+    "mobile": "npm run build:viewer && npm run start -w @git-client/mobile",
+    "build": "npm run build -w @git-client/web",
+    "typecheck": "tsc --noEmit && npm run typecheck -w @git-client/mobile",
+    "test": "tsx --test packages/github/src/*.test.ts scripts/*.test.ts",
+    "package:desktop": "npm run build && npm run package -w @git-client/desktop",
+    "build:viewer": "node scripts/build-native-viewer.mjs",
+    "postinstall": "npm run build:viewer"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "esbuild": "^0.28.2",
+    "prettier": "^3.9.10",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.3"
+  }
+}

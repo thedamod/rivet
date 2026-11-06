@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "Git Client",
+    "slug": "git-client",
+    "scheme": "gitclient",
+    "version": "0.1.0",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.gitclient.mobile"
+    },
+    "android": {
+      "package": "dev.gitclient.mobile"
+    },
+    "plugins": ["expo-secure-store"],
+    "platforms": ["ios", "android"]
+  }
+}

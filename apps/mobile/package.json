@@ -1,0 +1,37 @@
+{
+  "name": "@git-client/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "typecheck": "tsc --noEmit",
+    "export": "expo export --platform all --output-dir dist/native"
+  },
+  "dependencies": {
+    "@expo-google-fonts/geist": "^0.4.2",
+    "@expo-google-fonts/geist-mono": "^0.4.3",
+    "@expo/ui": "^58.0.20",
+    "@git-client/github": "*",
+    "@git-client/theme": "*",
+    "@react-native-menu/menu": "^2.0.0",
+    "@tabler/icons-react-native": "^3.44.0",
+    "@tanstack/react-query": "^5.90.0",
+    "expo": "~58.0.23",
+    "expo-audio": "^58.0.11",
+    "expo-file-system": "^58.0.13",
+    "expo-font": "^58.0.11",
+    "expo-secure-store": "*",
+    "expo-sharing": "^58.0.22",
+    "expo-status-bar": "*",
+    "expo-symbols": "~58.0.4",
+    "expo-video": "^58.0.13",
+    "react": "19.3.0",
+    "react-native": "*",
+    "react-native-safe-area-context": "*",
+    "react-native-svg": "^15.16.0",
+    "react-native-webview": "^14.0.1"
+  }
+}

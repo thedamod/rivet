@@ -1,0 +1,16 @@
+/* T3 Files is a compact, flat Pierre tree. Keep the host wide enough for its
+   virtualized rows and give the model a definite height before first paint. */
+.pierre-tree {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 0;
+  color: var(--text);
+  font-family: Geist, sans-serif;
+  contain: layout style;
+}
+.file-browser:has(> .pierre-tree) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}

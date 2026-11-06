@@ -1,0 +1,16 @@
+.comment-editor { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--canvas); }
+.comment-editor-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.comment-editor-tabs, .comment-editor-tools { display: flex; align-items: center; }
+.comment-editor-tabs button, .comment-editor-tools button { appearance: none; border: 0; background: transparent; color: var(--textMuted); cursor: pointer; font: inherit; }
+.comment-editor-tabs button { padding: 10px 14px; border-bottom: 2px solid transparent; }
+.comment-editor-tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--text); }
+.comment-editor-tools { padding: 3px 6px; flex-wrap: wrap; }
+.comment-editor-tools button { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 4px; }
+.comment-editor button:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, transparent); }
+.comment-editor button:focus-visible, .comment-editor textarea:focus-visible { outline: 2px solid var(--textMuted); outline-offset: -2px; }
+.comment-editor textarea, .pr-composer .comment-editor textarea { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 0; padding: 12px; background: transparent; color: var(--text); resize: vertical; font: inherit; line-height: 1.6; }
+.comment-editor-preview { min-height: 120px; padding: 12px; }
+.comment-editor [hidden] { display: none; }
+.pr-comments { padding: 0; }
+.pr-comments .activity-row { margin-inline: 16px; }
+.issue-description-label { margin-bottom: 6px; }
