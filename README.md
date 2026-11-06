@@ -14,7 +14,15 @@ Requires Node 24 and npm 11. Run `npm install` from this directory; installation
 
 ## GitHub OAuth
 
-Register a [GitHub OAuth App](https://github.com/settings/applications/new), enable **Device flow** in its settings, and put its public client ID in the root `github-oauth.json`:
+Register a [GitHub OAuth App](https://github.com/settings/applications/new) using these development settings:
+
+- Application name: `Git Client`
+- Homepage URL: `http://localhost:5173`
+- Authorization callback URL: `http://127.0.0.1:5173`
+- Enable Device Flow: checked
+- Expire user access tokens: keep enabled; session refresh is implemented
+
+Click **Register application**, then copy its public **Client ID** into the root `github-oauth.json`:
 
 ```json
 { "clientId": "YOUR_PUBLIC_CLIENT_ID" }
