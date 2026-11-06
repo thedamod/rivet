@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import { View, Linking } from "react-native";
 import { WebView } from "react-native-webview";
 import { viewerScript, sansFont, monoFont } from "./generated/viewer";
@@ -11,6 +11,7 @@ export function PierreViewer({
   onOpen,
   baseUrl,
   imageMap,
+  selection,
 }: {
   kind?: "code" | "diff" | "tree" | "markdown";
   name?: string;
@@ -20,7 +21,13 @@ export function PierreViewer({
   onOpen?: (path: string) => void;
   baseUrl?: string;
   imageMap?: Record<string, string>;
+  selection?: string;
 }) {
+  const web = useRef<React.ComponentRef<typeof WebView>>(null);
+  useEffect(() => {
+    if (kind === "tree" && selection === "")
+      web.current?.injectJavaScript("window.clearTreeSelection?.();true;");
+  }, [kind, selection]);
   const [height, setHeight] = useState(180);
   const html = useMemo(() => {
     const data = JSON.stringify({
@@ -38,6 +45,7 @@ export function PierreViewer({
   return (
     <View style={{ height: Math.min(height, 2400), width: "100%" }}>
       <WebView
+        ref={web}
         originWhitelist={["about:blank"]}
         source={source}
         javaScriptEnabled

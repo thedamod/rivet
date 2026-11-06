@@ -51,9 +51,14 @@ export function NativeRepositoryCode({
     });
     const subscription = AccessibilityInfo.addEventListener(
       "reduceMotionChanged",
-      (enabled) => { reduceMotion.current = enabled; },
+      (enabled) => {
+        reduceMotion.current = enabled;
+      },
     );
-    return () => { active = false; subscription.remove(); };
+    return () => {
+      active = false;
+      subscription.remove();
+    };
   }, []);
   function selectFile(path: string) {
     if (!reduceMotion.current)
@@ -191,6 +196,7 @@ export function NativeRepositoryCode({
           ) : (
             <PierreViewer
               kind="tree"
+              selection={selected}
               files={files}
               theme={theme}
               onOpen={(path) => {

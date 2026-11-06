@@ -100,6 +100,9 @@ if (data.kind === "markdown") {
       if (file && file.type !== "dir") post({ type: "open", path: file.path });
     },
   });
+  (window as any).clearTreeSelection = () => {
+    for (const path of tree.getSelectedPaths()) tree.getItem(path)?.deselect();
+  };
   // Native T3 Files rows are 42 px, have 17 px Pierre icons and 14 px labels.
   const resizeTree = () => {
     root.style.height = `${Math.max(120, Math.min(tree.getVisibleCount() * 42 + 16, 2400))}px`;

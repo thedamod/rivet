@@ -137,7 +137,11 @@ export function DirectoryTree({
     [model],
   );
   useEffect(() => {
-    if (!selected) return;
+    if (!selected) {
+      for (const path of model.getSelectedPaths())
+        model.getItem(path)?.deselect();
+      return;
+    }
     const parts = selected.split("/");
     for (let i = 1; i < parts.length; i++) {
       const directory = model.getItem(parts.slice(0, i).join("/"));
