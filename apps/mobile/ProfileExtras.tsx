@@ -107,20 +107,86 @@ export function NativeProfileExtras({
       {text("Contribution activity")}
       {data.months.map((month, index) => {
         const total = month.commits.reduce((sum, repo) => sum + repo.count, 0);
-        const open = expanded === month.month || (expanded === null && index === 0);
-        return <View key={month.month} style={{ borderTopWidth: 1, borderTopColor: colors.border }}>
-          <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setExpanded(open ? "" : month.month)} style={{ paddingVertical: 12, flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
-            {text(new Date(`${month.month}-01T00:00:00Z`).toLocaleDateString(undefined, { month: "long", year: "numeric", timeZone: "UTC" }))}
-            {text(`${total.toLocaleString()} commits${month.pullRequests.length ? ` · ${month.pullRequests.length} PRs` : ""}`, true)}
-          </Pressable>
-          {open && <View style={{ gap: 12, paddingBottom: 14 }}>
-            {month.commits.map((repo) => <Pressable key={repo.repo} accessibilityRole="link" onPress={() => Linking.openURL(repo.url)} style={{ gap: 5 }}>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>{text(repo.repo)}{text(repo.count.toLocaleString(), true)}</View>
-              <View style={{ height: 4, backgroundColor: colors.surface, borderRadius: 2 }}><View style={{ width: `${total ? (repo.count / total) * 100 : 0}%`, height: 4, backgroundColor: "#2e8b57", borderRadius: 2 }} /></View>
-            </Pressable>)}
-            {month.pullRequests.map((pr) => <Pressable key={pr.url} accessibilityRole="link" onPress={() => Linking.openURL(pr.url)}>{text(pr.title)}{text(pr.repo, true)}</Pressable>)}
-          </View>}
-        </View>;
+        const open =
+          expanded === month.month || (expanded === null && index === 0);
+        return (
+          <View
+            key={month.month}
+            style={{ borderTopWidth: 1, borderTopColor: colors.border }}
+          >
+            <Pressable
+              accessibilityRole="button"
+              accessibilityState={{ expanded: open }}
+              onPress={() => setExpanded(open ? "" : month.month)}
+              style={{
+                paddingVertical: 12,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                gap: 8,
+              }}
+            >
+              {text(
+                new Date(`${month.month}-01T00:00:00Z`).toLocaleDateString(
+                  undefined,
+                  { month: "long", year: "numeric", timeZone: "UTC" },
+                ),
+              )}
+              {text(
+                `${total.toLocaleString()} commits${month.pullRequests.length ? ` · ${month.pullRequests.length} PRs` : ""}`,
+                true,
+              )}
+            </Pressable>
+            {open && (
+              <View style={{ gap: 12, paddingBottom: 14 }}>
+                {month.commits.map((repo) => (
+                  <Pressable
+                    key={repo.repo}
+                    accessibilityRole="link"
+                    onPress={() => Linking.openURL(repo.url)}
+                    style={{ gap: 5 }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        gap: 8,
+                      }}
+                    >
+                      {text(repo.repo)}
+                      {text(repo.count.toLocaleString(), true)}
+                    </View>
+                    <View
+                      style={{
+                        height: 4,
+                        backgroundColor: colors.surface,
+                        borderRadius: 2,
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: `${total ? (repo.count / total) * 100 : 0}%`,
+                          height: 4,
+                          backgroundColor: "#2e8b57",
+                          borderRadius: 2,
+                        }}
+                      />
+                    </View>
+                  </Pressable>
+                ))}
+                {month.pullRequests.map((pr) => (
+                  <Pressable
+                    key={pr.url}
+                    accessibilityRole="link"
+                    onPress={() => Linking.openURL(pr.url)}
+                  >
+                    {text(pr.title)}
+                    {text(pr.repo, true)}
+                  </Pressable>
+                ))}
+              </View>
+            )}
+          </View>
+        );
       })}
       {data.errors.map((e) => (
         <React.Fragment key={e}>{text(e, true)}</React.Fragment>

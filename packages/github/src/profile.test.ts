@@ -36,6 +36,32 @@ test("profile pins and contribution history use GraphQL variables and preserve A
                         commitCount: 2,
                         url: "https://github.com/a/repo/commits",
                       },
+                      {
+                        occurredAt: "2026-11-02",
+                        commitCount: 3,
+                        url: "https://github.com/a/repo/commits",
+                      },
+                      {
+                        occurredAt: "2026-10-30",
+                        commitCount: 4,
+                        url: "https://github.com/a/repo/commits",
+                      },
+                    ],
+                  },
+                },
+              ],
+              pullRequestContributionsByRepository: [
+                {
+                  repository: { nameWithOwner: "a/repo" },
+                  contributions: {
+                    nodes: [
+                      {
+                        occurredAt: "2026-11-04",
+                        pullRequest: {
+                          title: "Fix issue",
+                          url: "https://github.com/a/repo/pull/1",
+                        },
+                      },
                     ],
                   },
                 },
@@ -52,6 +78,13 @@ test("profile pins and contribution history use GraphQL variables and preserve A
   assert.equal(result.total, 42);
   assert.equal(result.weeks[0].contributionDays[0].contributionCount, 2);
   assert.equal(result.commits[0].count, 2);
+  assert.deepEqual(
+    result.months.map((month) => month.month),
+    ["2026-11", "2026-10"],
+  );
+  assert.equal(result.months[0].commits[0].count, 5);
+  assert.equal(result.months[0].pullRequests[0].title, "Fix issue");
+  assert.equal(result.months[1].commits[0].count, 4);
 });
 test("GraphQL permission errors do not turn into a fake empty profile", async () => {
   const api = createClient(

@@ -11,7 +11,11 @@ export type ProfileExtras = {
   }[];
   commits: { repo: string; date: string; count: number; url: string }[];
   pullRequests: { repo: string; date: string; url: string; title: string }[];
-  months: { month: string; commits: { repo: string; count: number; url: string }[]; pullRequests: { repo: string; date: string; url: string; title: string }[] }[];
+  months: {
+    month: string;
+    commits: { repo: string; count: number; url: string }[];
+    pullRequests: { repo: string; date: string; url: string; title: string }[];
+  }[];
   errors: string[];
 };
 export async function loadProfileExtras(
@@ -32,55 +36,84 @@ export async function loadProfileExtras(
         "Profile contribution data unavailable",
     );
   const collection = user.contributionsCollection;
-  const commits: ProfileExtras["commits"] = (collection?.commitContributionsByRepository || [])
-    .flatMap((r: any) => (r.contributions?.nodes || []).map((c: any) => ({ repo: r.repository.nameWithOwner, date: c.occurredAt, count: c.commitCount, url: c.url })))
+  const commits: ProfileExtras["commits"] = (
+    collection?.commitContributionsByRepository || []
+  )
+    .flatMap((r: any) =>
+      (r.contributions?.nodes || []).map((c: any) => ({
+        repo: r.repository.nameWithOwner,
+        date: c.occurredAt,
+        count: c.commitCount,
+        url: c.url,
+      })),
+    )
     .sort((a: any, b: any) => b.date.localeCompare(a.date));
-  const pullRequests: ProfileExtras["pullRequests"] = (collection?.pullRequestContributionsByRepository || [])
-    .flatMap((r: any) => (r.contributions?.nodes || []).filter((c: any) => c.pullRequest).map((c: any) => ({ repo: r.repository.nameWithOwner, date: c.occurredAt, url: c.pullRequest.url, title: c.pullRequest.title })))
+  const pullRequests: ProfileExtras["pullRequests"] = (
+    collection?.pullRequestContributionsByRepository || []
+  )
+    .flatMap((r: any) =>
+      (r.contributions?.nodes || [])
+        .filter((c: any) => c.pullRequest)
+        .map((c: any) => ({
+          repo: r.repository.nameWithOwner,
+          date: c.occurredAt,
+          url: c.pullRequest.url,
+          title: c.pullRequest.title,
+        })),
+    )
     .sort((a: any, b: any) => b.date.localeCompare(a.date));
   const monthMap = new Map<string, ProfileExtras["months"][number]>();
   const monthFor = (date: string) => {
     const month = date.slice(0, 7);
-    if (!monthMap.has(month)) monthMap.set(month, { month, commits: [], pullRequests: [] });
+    if (!monthMap.has(month))
+      monthMap.set(month, { month, commits: [], pullRequests: [] });
     return monthMap.get(month)!;
   };
   for (const commit of commits) {
     const month = monthFor(commit.date);
     const repo = month.commits.find((item) => item.repo === commit.repo);
     if (repo) repo.count += commit.count;
-    else month.commits.push({ repo: commit.repo, count: commit.count, url: commit.url });
+    else
+      month.commits.push({
+        repo: commit.repo,
+        count: commit.count,
+        url: commit.url,
+      });
   }
   for (const pr of pullRequests) monthFor(pr.date).pullRequests.push(pr);
-  const months = [...monthMap.values()].sort((a, b) => b.month.localeCompare(a.month));
-  for (const month of months) month.commits.sort((a, b) => b.count - a.count || a.repo.localeCompare(b.repo));
+  const months = [...monthMap.values()].sort((a, b) =>
+    b.month.localeCompare(a.month),
+  );
+  for (const month of months)
+    month.commits.sort(
+      (a, b) => b.count - a.count || a.repo.localeCompare(b.repo),
+    );
   return {
-    pinned: (user.pinnedItems?.nodes || [])
-      .filter(Boolean)
-      .map(
-        (r: any) =>
-          ({
-            id: r.databaseId,
-            name: r.name,
-            full_name: r.nameWithOwner,
-            description: r.description,
-            private: r.isPrivate,
-            fork: r.isFork,
-            archived: false,
-            language: r.primaryLanguage?.name || null,
-            stargazers_count: r.stargazerCount,
-            forks_count: r.forkCount,
-            open_issues_count: 0,
-            default_branch: r.defaultBranchRef?.name || "HEAD",
-            updated_at: r.updatedAt,
-            pushed_at: r.pushedAt,
-            html_url: r.url,
-            owner: {
-              login: r.owner.login,
-              avatar_url: r.owner.avatarUrl,
-              html_url: r.owner.url,
-            },
-          }) as Repository,
-      ),
+    pinned: (user.pinnedItems?.nodes || []).filter(Boolean).map(
+      (r: any) =>
+        ({
+          id: r.databaseId,
+          name: r.name,
+          full_name: r.nameWithOwner,
+          description: r.description,
+          private: r.isPrivate,
+          fork: r.isFork,
+          archived: false,
+          language: r.primaryLanguage?.name || null,
+          stargazers_count: r.stargazerCount,
+          forks_count: r.forkCount,
+          open_issues_count: 0,
+          default_branch: r.defaultBranchRef?.name || "HEAD",
+          updated_at: r.updatedAt,
+          pushed_at: r.pushedAt,
+          html_url: r.url,
+          owner: {
+            login: r.owner.login,
+            avatar_url: r.owner.avatarUrl,
+            html_url: r.owner.url,
+          },
+        }) as Repository,
+    ),
     total: collection?.contributionCalendar.totalContributions || 0,
     weeks: collection?.contributionCalendar.weeks || [],
     commits,

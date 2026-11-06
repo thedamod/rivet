@@ -1,11 +1,65 @@
-.activity-month { border-top: 1px solid var(--border); }
-.activity-month summary { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0; cursor: pointer; font-size: 13px; font-weight: 500; }
-.activity-month summary span:last-child { color: var(--muted-foreground); font-weight: 400; }
-.activity-details { display: grid; gap: 10px; padding: 2px 0 16px; }
-.activity-repo, .activity-pr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(80px, 30%) auto; align-items: center; gap: 12px; padding: 2px 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; font: inherit; font-size: 12px; }
-.activity-repo:hover, .activity-pr:hover { text-decoration: underline; }
-.activity-repo > span:first-child, .activity-pr > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.activity-repo > span:last-child, .activity-pr > span:last-child { color: var(--muted-foreground); }
-.activity-bar { height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
-.activity-bar > span { display: block; height: 100%; background: #2e8b57; border-radius: inherit; }
-.activity-pr { grid-template-columns: minmax(0, 1fr) auto; }
+.activity-month {
+  border-top: 1px solid var(--border);
+}
+.activity-month summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+.activity-month summary span:last-child {
+  color: var(--mutedForeground);
+  font-weight: 400;
+}
+.activity-details {
+  display: grid;
+  gap: 10px;
+  padding: 2px 0 16px;
+}
+.activity-repo,
+.activity-pr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(80px, 30%) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+.activity-repo:hover,
+.activity-pr:hover {
+  text-decoration: underline;
+}
+.activity-repo > span:first-child,
+.activity-pr > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.activity-repo > span:last-child,
+.activity-pr > span:last-child {
+  color: var(--mutedForeground);
+}
+.activity-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+.activity-bar > span {
+  display: block;
+  height: 100%;
+  background: #2e8b57;
+  border-radius: inherit;
+}
+.activity-pr {
+  grid-template-columns: minmax(0, 1fr) auto;
+}

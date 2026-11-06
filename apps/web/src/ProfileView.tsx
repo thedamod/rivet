@@ -13,10 +13,7 @@ import {
   Link as LinkIcon,
   Github as GithubLogo,
 } from "lucide-react";
-import {
-  decodeContent,
-  type Repository,
-} from "@git-client/github";
+import { decodeContent, type Repository } from "@git-client/github";
 import { api, openExternal } from "./api";
 import { Empty, ErrorBox, Loading, Markdown, Pager, Time } from "./components";
 import { useOpenProfile } from "./navigation";
@@ -329,13 +326,57 @@ function ProfileExtrasView({
       <h2>Contribution activity</h2>
       {data.months.map((month) => {
         const total = month.commits.reduce((sum, repo) => sum + repo.count, 0);
-        return <details className="activity-month" key={month.month} open={month === data.months[0]}>
-          <summary><span>{new Date(`${month.month}-01T00:00:00Z`).toLocaleDateString(undefined, { month: "long", year: "numeric", timeZone: "UTC" })}</span><span>{total.toLocaleString()} commits{month.pullRequests.length > 0 ? ` · ${month.pullRequests.length} pull requests` : ""}</span></summary>
-          <div className="activity-details">
-            {month.commits.map((repo) => <button className="activity-repo" key={repo.repo} onClick={() => openExternal(repo.url)}><span>{repo.repo}</span><span className="activity-bar"><span style={{ width: `${total ? (repo.count / total) * 100 : 0}%` }} /></span><span>{repo.count.toLocaleString()}</span></button>)}
-            {month.pullRequests.map((pr) => <button className="activity-pr" key={pr.url} onClick={() => openExternal(pr.url)}><span>{pr.title}</span><span>{pr.repo}</span></button>)}
-          </div>
-        </details>;
+        return (
+          <details
+            className="activity-month"
+            key={month.month}
+            open={month === data.months[0]}
+          >
+            <summary>
+              <span>
+                {new Date(`${month.month}-01T00:00:00Z`).toLocaleDateString(
+                  undefined,
+                  { month: "long", year: "numeric", timeZone: "UTC" },
+                )}
+              </span>
+              <span>
+                {total.toLocaleString()} commits
+                {month.pullRequests.length > 0
+                  ? ` · ${month.pullRequests.length} pull requests`
+                  : ""}
+              </span>
+            </summary>
+            <div className="activity-details">
+              {month.commits.map((repo) => (
+                <button
+                  className="activity-repo"
+                  key={repo.repo}
+                  onClick={() => openExternal(repo.url)}
+                >
+                  <span>{repo.repo}</span>
+                  <span className="activity-bar">
+                    <span
+                      style={{
+                        width: `${total ? (repo.count / total) * 100 : 0}%`,
+                      }}
+                    />
+                  </span>
+                  <span>{repo.count.toLocaleString()}</span>
+                </button>
+              ))}
+              {month.pullRequests.map((pr) => (
+                <button
+                  className="activity-pr"
+                  key={pr.url}
+                  onClick={() => openExternal(pr.url)}
+                >
+                  <span>{pr.title}</span>
+                  <span>{pr.repo}</span>
+                </button>
+              ))}
+            </div>
+          </details>
+        );
       })}
       {data.errors.map((e) => (
         <p className="muted small" key={e}>

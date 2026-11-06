@@ -235,40 +235,49 @@ export function NativeProfileView({
       ) : current.error ? (
         text(current.error.message, true)
       ) : tab === "repositories" || tab === "starred" ? (
-        repos.data?.filter((repo) => `${repo.name} ${repo.description || ""}`.toLowerCase().includes(search.toLowerCase())).map((repo) => (
-          <Pressable
-            key={repo.id}
-            accessibilityRole="button"
-            onPress={() => onRepository(repo)}
-            style={[s.row, { borderBottomColor: colors.border }]}
-          >
-            <AppIcon name="book-outline" size={18} color={colors.textMuted} />
-            <View style={{ flex: 1, gap: 5 }}>
-              {text(repo.name, false, {
-                fontFamily: "GeistMedium",
-                fontSize: 14,
-              })}
-              {!!repo.description &&
-                text(repo.description, true, { fontSize: 12, lineHeight: 19 })}
-              <View style={s.meta}>
-                {text(repo.language || "", true, { fontSize: 11 })}
-                <AppIcon
-                  name="star-outline"
-                  size={11}
-                  color={colors.textMuted}
-                />
-                {text(repo.stargazers_count.toLocaleString(), true, {
-                  fontSize: 11,
+        repos.data
+          ?.filter((repo) =>
+            `${repo.name} ${repo.description || ""}`
+              .toLowerCase()
+              .includes(search.toLowerCase()),
+          )
+          .map((repo) => (
+            <Pressable
+              key={repo.id}
+              accessibilityRole="button"
+              onPress={() => onRepository(repo)}
+              style={[s.row, { borderBottomColor: colors.border }]}
+            >
+              <AppIcon name="book-outline" size={18} color={colors.textMuted} />
+              <View style={{ flex: 1, gap: 5 }}>
+                {text(repo.name, false, {
+                  fontFamily: "GeistMedium",
+                  fontSize: 14,
                 })}
+                {!!repo.description &&
+                  text(repo.description, true, {
+                    fontSize: 12,
+                    lineHeight: 19,
+                  })}
+                <View style={s.meta}>
+                  {text(repo.language || "", true, { fontSize: 11 })}
+                  <AppIcon
+                    name="star-outline"
+                    size={11}
+                    color={colors.textMuted}
+                  />
+                  {text(repo.stargazers_count.toLocaleString(), true, {
+                    fontSize: 11,
+                  })}
+                </View>
               </View>
-            </View>
-            <AppIcon
-              name="chevron-forward"
-              size={14}
-              color={colors.textMuted}
-            />
-          </Pressable>
-        ))
+              <AppIcon
+                name="chevron-forward"
+                size={14}
+                color={colors.textMuted}
+              />
+            </Pressable>
+          ))
       ) : (
         people.data?.map((person) => (
           <Pressable
