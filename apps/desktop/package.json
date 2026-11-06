@@ -30,6 +30,14 @@
       {
         "from": "../../THIRD_PARTY_NOTICES.md",
         "to": "THIRD_PARTY_NOTICES.md"
+      },
+      {
+        "from": "../../packages/github/src/oauth.cjs",
+        "to": "oauth.cjs"
+      },
+      {
+        "from": "../../github-oauth.json",
+        "to": "github-oauth.json"
       }
     ],
     "electronVersion": "45.2.3",

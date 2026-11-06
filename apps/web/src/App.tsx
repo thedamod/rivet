@@ -1,3 +1,4 @@
+import { SignOut } from "./AuthGate";
 import { useAppHistory } from "./useAppHistory";
 import { IssueGlyph } from "./ui/status";
 import { NavbarSearch } from "./NavbarSearch";
@@ -313,11 +314,7 @@ export function App() {
                   </div>
                   <span className="badge green">Connected</span>
                 </div>
-                <p>
-                  Desktop uses your local GitHub CLI session. To switch
-                  accounts, run <code>gh auth switch</code>, then restart Git
-                  Client. Tokens stay in the main process.
-                </p>
+                <SignOut />
                 <Button onClick={() => openExternal(viewer.data!.html_url)}>
                   Open GitHub profile <ArrowSquareOut />
                 </Button>

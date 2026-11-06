@@ -8,6 +8,7 @@ import "@fontsource/geist/latin-600.css";
 import "@fontsource/geist-mono/latin-400.css";
 import "./styles.css";
 import "./ui/primitives.css";
+import { AuthGate } from "./AuthGate";
 import { App } from "./App";
 const client = new QueryClient({
   defaultOptions: {
@@ -18,7 +19,9 @@ createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <PopupProvider>
       <QueryClientProvider client={client}>
-        <App />
+        <AuthGate>
+          <App />
+        </AuthGate>
       </QueryClientProvider>
     </PopupProvider>
   </React.StrictMode>,
