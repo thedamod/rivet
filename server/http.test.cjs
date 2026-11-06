@@ -207,3 +207,22 @@ test("sign-out and GitHub 401 responses clear the host session cookie", async ()
   assert.equal(revoked.status, 401);
   assert.match(revoked.headers["set-cookie"], /Max-Age=0/);
 });
+test("parsed empty GET bodies are not forwarded to GitHub, while writes preserve JSON", async (t) => {
+  const forwarded = [];
+  t.mock.method(globalThis, "fetch", async (url, init) => {
+    // Request enforces the same GET/body restriction as Node's production fetch.
+    const request = new Request(url, init);
+    forwarded.push({ url: request.url, method: request.method, body: init.body });
+    return Response.json({ login: "user" });
+  });
+  const headers = { cookie: sealSession(state, secret) };
+  const read = await invoke({}, { path: "/api/github/user", headers, body: {} });
+  assert.equal(read.status, 200);
+  assert.equal(forwarded[0].body, undefined);
+  const write = await invoke({}, {
+    path: "/api/github/repos/a/b/issues", method: "POST", headers,
+    body: { title: "Issue" },
+  });
+  assert.equal(write.status, 200);
+  assert.equal(forwarded[1].body, JSON.stringify({ title: "Issue" }));
+});

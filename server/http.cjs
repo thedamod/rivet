@@ -66,7 +66,7 @@ function createHandler(options = {}) {
           message: "Refresh your GitHub session.",
         });
       const body =
-        req.body == null
+        req.method === "GET" || req.method === "HEAD" || req.body == null
           ? undefined
           : typeof req.body === "string"
             ? req.body
