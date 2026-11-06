@@ -50,11 +50,14 @@ export function RepositoryView({
   onIssue: (n: number, pull: boolean) => void;
 }) {
   const openProfile = useOpenProfile();
-  const [location, setLocation] = useHashFields({
-    tab: "code",
-    branch: repo.default_branch,
-    file: "",
-  });
+  const [location, setLocation] = useHashFields(
+    {
+      tab: "code",
+      branch: repo.default_branch,
+      file: "",
+    },
+    { animateFile: true },
+  );
   const { tab, branch, file: path } = location;
   const setTab = (tab: string) => setLocation({ tab, file: "" });
   const setBranch = (branch: string) => setLocation({ branch, file: "" });
