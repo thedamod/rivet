@@ -6,7 +6,7 @@
   "outputDirectory": "apps/web/dist",
   "functions": { "api/**/*.js": { "maxDuration": 60 } },
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api?__rivet_path=:path*" }
+    { "source": "/api/:__rivet_path*", "destination": "/api?__rivet_path=:__rivet_path*" }
   ],
   "headers": [
     {
