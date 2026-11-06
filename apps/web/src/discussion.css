@@ -46,3 +46,7 @@ button.pr-author-link:hover {
     --pr-gutter: 20px;
   }
 }
+
+.pr-detail .comments-toolbar {
+  padding-right: var(--pr-gutter);
+}
