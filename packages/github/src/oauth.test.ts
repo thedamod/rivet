@@ -17,7 +17,8 @@ function fixture(responses: unknown[], saved: OAuthCredentials | null = null) {
     fetch: (async (url, options) => {
       requests.push({ url: String(url), body: String(options?.body ?? "") });
       assert.ok(responses.length, "Unexpected OAuth network request");
-      return Response.json(responses.shift());
+      const next = responses.shift();
+      return next instanceof Response ? next : Response.json(next);
     }) as typeof fetch,
   });
   return {
@@ -119,12 +120,15 @@ test("refresh rotates and persists credentials once for concurrent API calls", a
   assert.equal(f.store.at(-1), null);
 });
 test("an invalid refresh grant clears the saved session", async () => {
-  const f = fixture([{ error: "bad_refresh_token" }], {
-    clientId: "public-app-id",
-    accessToken: "old",
-    refreshToken: "bad",
-    expiresAt: 1,
-  });
+  const f = fixture(
+    [Response.json({ error: "bad_refresh_token" }, { status: 400 })],
+    {
+      clientId: "public-app-id",
+      accessToken: "old",
+      refreshToken: "bad",
+      expiresAt: 1,
+    },
+  );
   assert.equal(await f.session.accessToken(), null);
   assert.equal(f.store.at(-1), null);
 });
@@ -179,4 +183,12 @@ test("a storage failure cannot report a successful sign-in and can be retried", 
   time = 5000;
   await assert.rejects(auth.poll(), /locked/);
   assert.equal((await auth.status()).authenticated, false);
+});
+
+test("GitHub HTTP 400 reports the disabled device-flow setting", async () => {
+  const f = fixture([
+    Response.json({ error: "device_flow_disabled" }, { status: 400 }),
+  ]);
+  await assert.rejects(f.session.begin(), /Enable device flow/);
+  assert.equal((await f.session.status()).authenticated, false);
 });

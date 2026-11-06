@@ -45,9 +45,16 @@ function createOAuthSession({
       },
       body: new URLSearchParams({ client_id: clientId, ...body }).toString(),
     });
-    if (!response.ok)
+    let data;
+    try {
+      data = await response.json();
+    } catch {
       throw new Error("GitHub sign-in is unavailable. Try again.");
-    return response.json();
+    }
+    // GitHub returns device-flow and refresh errors with HTTP 400 as well as 200.
+    if (!response.ok && typeof data?.error !== "string")
+      throw new Error("GitHub sign-in is unavailable. Try again.");
+    return data;
   }
   const snapshot = () => ({
     configured: !!clientId,
