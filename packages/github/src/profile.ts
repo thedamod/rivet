@@ -2,6 +2,13 @@ import type { Repository } from "./index";
 export type ProfileExtras = {
   pinned: Repository[];
   total: number;
+  totals: {
+    commits: number;
+    pullRequests: number;
+    issues: number;
+    reviews: number;
+    repositories: number;
+  };
   weeks: {
     contributionDays: {
       date: string;
@@ -25,7 +32,7 @@ export async function loadProfileExtras(
   const result = await request<any>("/graphql", {
     method: "POST",
     body: JSON.stringify({
-      query: `query Profile($login:String!){user(login:$login){pinnedItems(first:6,types:REPOSITORY){nodes{... on Repository{databaseId name nameWithOwner description isPrivate isFork url stargazerCount forkCount updatedAt pushedAt defaultBranchRef{name} owner{login avatarUrl url} primaryLanguage{name}}}} contributionsCollection{contributionCalendar{totalContributions weeks{contributionDays{date contributionCount contributionLevel}}} commitContributionsByRepository(maxRepositories:100){repository{nameWithOwner url} contributions(first:100){nodes{occurredAt commitCount url}}} pullRequestContributionsByRepository(maxRepositories:100){repository{nameWithOwner} contributions(first:100){nodes{occurredAt pullRequest{url title}}}}}}}`,
+      query: `query Profile($login:String!){user(login:$login){pinnedItems(first:6,types:REPOSITORY){nodes{... on Repository{databaseId name nameWithOwner description isPrivate isFork url stargazerCount forkCount updatedAt pushedAt defaultBranchRef{name} owner{login avatarUrl url} primaryLanguage{name}}}} contributionsCollection{totalCommitContributions totalPullRequestContributions totalIssueContributions totalPullRequestReviewContributions totalRepositoryContributions contributionCalendar{totalContributions weeks{contributionDays{date contributionCount contributionLevel}}} commitContributionsByRepository(maxRepositories:100){repository{nameWithOwner url} contributions(first:100){nodes{occurredAt commitCount url}}} pullRequestContributionsByRepository(maxRepositories:100){repository{nameWithOwner} contributions(first:100){nodes{occurredAt pullRequest{url title}}}}}}}`,
       variables: { login },
     }),
   });
@@ -116,6 +123,16 @@ export async function loadProfileExtras(
     ),
     total: collection?.contributionCalendar.totalContributions || 0,
     weeks: collection?.contributionCalendar.weeks || [],
+    totals: {
+      commits:
+        collection?.totalCommitContributions ??
+        commits.reduce((sum, c) => sum + c.count, 0),
+      pullRequests:
+        collection?.totalPullRequestContributions ?? pullRequests.length,
+      issues: collection?.totalIssueContributions ?? 0,
+      reviews: collection?.totalPullRequestReviewContributions ?? 0,
+      repositories: collection?.totalRepositoryContributions ?? 0,
+    },
     commits,
     pullRequests,
     months,

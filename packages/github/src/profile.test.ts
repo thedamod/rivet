@@ -12,6 +12,11 @@ test("profile pins and contribution history use GraphQL variables and preserve A
           user: {
             pinnedItems: { nodes: [] },
             contributionsCollection: {
+              totalCommitContributions: 9,
+              totalPullRequestContributions: 1,
+              totalIssueContributions: 3,
+              totalPullRequestReviewContributions: 7,
+              totalRepositoryContributions: 2,
               contributionCalendar: {
                 totalContributions: 42,
                 weeks: [
@@ -76,6 +81,14 @@ test("profile pins and contribution history use GraphQL variables and preserve A
   const result = await api.profileExtras("a");
   assert.deepEqual(input.variables, { login: "a" });
   assert.equal(result.total, 42);
+  assert.deepEqual(result.totals, {
+    commits: 9,
+    pullRequests: 1,
+    issues: 3,
+    reviews: 7,
+    repositories: 2,
+  });
+  assert.match(input.query, /totalPullRequestReviewContributions/);
   assert.equal(result.weeks[0].contributionDays[0].contributionCount, 2);
   assert.equal(result.commits[0].count, 2);
   assert.deepEqual(

@@ -1,3 +1,4 @@
+import { ProfileActivity } from "./ProfileActivity";
 import "./profile-activity.css";
 import { useHashFields } from "./useHashFields";
 import { Button } from "./ui/primitives";
@@ -57,7 +58,7 @@ export function ProfileView({
     enabled: tab === "overview",
   });
   const extras = useQuery({
-    queryKey: ["profile-extras", login],
+    queryKey: ["profile-extras", login, "overview"],
     queryFn: () => api.profileExtras(login),
     enabled: tab === "overview",
   });
@@ -277,13 +278,6 @@ function ProfileExtrasView({
   if (loading) return <Loading />;
   if (error) return <ErrorBox error={error} />;
   if (!data) return null;
-  const levels = [
-    "NONE",
-    "FIRST_QUARTILE",
-    "SECOND_QUARTILE",
-    "THIRD_QUARTILE",
-    "FOURTH_QUARTILE",
-  ];
   return (
     <section className="profile-extras">
       {!!data.pinned.length && (
@@ -308,76 +302,7 @@ function ProfileExtrasView({
           </div>
         </>
       )}
-      <h2>{data.total.toLocaleString()} contributions in the last year</h2>
-      <div className="contribution-calendar" aria-label="Contribution history">
-        {data.weeks.map((w, i) => (
-          <div className="contribution-week" key={i}>
-            {w.contributionDays.map((d) => (
-              <span
-                key={d.date}
-                className={`contribution-day contribution-${levels.indexOf(d.contributionLevel)}`}
-                title={`${d.date}: ${d.contributionCount} contributions`}
-                aria-label={`${d.date}: ${d.contributionCount} contributions`}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
-      <h2>Contribution activity</h2>
-      {data.months.map((month) => {
-        const total = month.commits.reduce((sum, repo) => sum + repo.count, 0);
-        return (
-          <details
-            className="activity-month"
-            key={month.month}
-            open={month === data.months[0]}
-          >
-            <summary>
-              <span>
-                {new Date(`${month.month}-01T00:00:00Z`).toLocaleDateString(
-                  undefined,
-                  { month: "long", year: "numeric", timeZone: "UTC" },
-                )}
-              </span>
-              <span>
-                {total.toLocaleString()} commits
-                {month.pullRequests.length > 0
-                  ? ` · ${month.pullRequests.length} pull requests`
-                  : ""}
-              </span>
-            </summary>
-            <div className="activity-details">
-              {month.commits.map((repo) => (
-                <button
-                  className="activity-repo"
-                  key={repo.repo}
-                  onClick={() => openExternal(repo.url)}
-                >
-                  <span>{repo.repo}</span>
-                  <span className="activity-bar">
-                    <span
-                      style={{
-                        width: `${total ? (repo.count / total) * 100 : 0}%`,
-                      }}
-                    />
-                  </span>
-                  <span>{repo.count.toLocaleString()}</span>
-                </button>
-              ))}
-              {month.pullRequests.map((pr) => (
-                <button
-                  className="activity-pr"
-                  key={pr.url}
-                  onClick={() => openExternal(pr.url)}
-                >
-                  <span>{pr.title}</span>
-                  <span>{pr.repo}</span>
-                </button>
-              ))}
-            </div>
-          </details>
-        );
-      })}
+      <ProfileActivity data={data} />
       {data.errors.map((e) => (
         <p className="muted small" key={e}>
           {e}

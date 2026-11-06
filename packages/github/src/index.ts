@@ -293,3 +293,10 @@ export {
   type RepositoryTree,
   type TreeEntry,
 } from "./tree";
+
+export {
+  currentMonth,
+  contributionLevel,
+  profileMonths,
+  profilePeriod,
+} from "./activity";

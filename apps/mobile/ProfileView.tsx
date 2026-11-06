@@ -20,6 +20,7 @@ import {
 import { NativeMarkdown } from "./Markdown";
 type Palette = {
   canvas: string;
+  accent: string;
   surface: string;
   text: string;
   textMuted: string;
