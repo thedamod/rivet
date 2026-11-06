@@ -364,7 +364,13 @@ function NewIssue({
         </label>
         <div>
           <div className="issue-description-label">Description</div>
-          <CommentEditor label="Description" value={body} onChange={setBody} rows={8} baseUrl={`https://github.com/${repo}/`} />
+          <CommentEditor
+            label="Description"
+            value={body}
+            onChange={setBody}
+            rows={8}
+            baseUrl={`https://github.com/${repo}/`}
+          />
         </div>
         {create.error && <ErrorBox error={create.error} />}
         <div className="dialog-actions">

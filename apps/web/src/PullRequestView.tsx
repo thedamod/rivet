@@ -486,7 +486,14 @@ export function IssueDetail({
             comment.mutate();
           }}
         >
-          <CommentEditor label="Comment" placeholder="Comment…" value={body} onChange={setBody} rows={4} baseUrl={`https://github.com/${repo}/`} />
+          <CommentEditor
+            label="Comment"
+            placeholder="Comment…"
+            value={body}
+            onChange={setBody}
+            rows={4}
+            baseUrl={`https://github.com/${repo}/`}
+          />
           <div className="pr-composer-actions">
             {!pull && (
               <Button

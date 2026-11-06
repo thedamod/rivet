@@ -1,6 +1,17 @@
 import { useId, useRef, useState } from "react";
-import { Bold, Code2, Heading, Italic, Link, List, ListChecks, ListOrdered, Quote } from "lucide-react";
+import {
+  Bold,
+  Code2,
+  Heading,
+  Italic,
+  Link,
+  List,
+  ListChecks,
+  ListOrdered,
+  Quote,
+} from "lucide-react";
 import { Markdown } from "./components";
+import { Button } from "./ui/primitives";
 import "./comment-editor.css";
 
 type Props = {
@@ -12,7 +23,14 @@ type Props = {
   rows?: number;
 };
 
-export function CommentEditor({ value, onChange, label, placeholder, baseUrl, rows = 6 }: Props) {
+export function CommentEditor({
+  value,
+  onChange,
+  label,
+  placeholder,
+  baseUrl,
+  rows = 6,
+}: Props) {
   const [preview, setPreview] = useState(false);
   const textarea = useRef<HTMLTextAreaElement>(null);
   const id = useId();
@@ -34,33 +52,114 @@ export function CommentEditor({ value, onChange, label, placeholder, baseUrl, ro
   }
 
   const actions = [
-    { label: "Add heading", icon: Heading, run: () => format("## ", "", "Heading", true) },
+    {
+      label: "Add heading",
+      icon: Heading,
+      run: () => format("## ", "", "Heading", true),
+    },
     { label: "Bold", icon: Bold, run: () => format("**", "**") },
     { label: "Italic", icon: Italic, run: () => format("*", "*") },
     { label: "Quote", icon: Quote, run: () => format("> ", "", "Quote", true) },
     { label: "Code", icon: Code2, run: () => format("`", "`", "code") },
-    { label: "Insert link", icon: Link, run: () => format("[", "](url)", "link text") },
-    { label: "Bulleted list", icon: List, run: () => format("- ", "", "List item", true) },
-    { label: "Numbered list", icon: ListOrdered, run: () => format("1. ", "", "List item", true) },
-    { label: "Task list", icon: ListChecks, run: () => format("- [ ] ", "", "Task", true) },
+    {
+      label: "Insert link",
+      icon: Link,
+      run: () => format("[", "](url)", "link text"),
+    },
+    {
+      label: "Bulleted list",
+      icon: List,
+      run: () => format("- ", "", "List item", true),
+    },
+    {
+      label: "Numbered list",
+      icon: ListOrdered,
+      run: () => format("1. ", "", "List item", true),
+    },
+    {
+      label: "Task list",
+      icon: ListChecks,
+      run: () => format("- [ ] ", "", "Task", true),
+    },
   ];
 
   return (
     <div className="comment-editor">
       <div className="comment-editor-bar">
-        <div className="comment-editor-tabs" role="tablist" aria-label={`${label} editor`}>
-          <button type="button" role="tab" aria-selected={!preview} aria-controls={`${id}-write`} id={`${id}-write-tab`} onClick={() => setPreview(false)}>Write</button>
-          <button type="button" role="tab" aria-selected={preview} aria-controls={`${id}-preview`} id={`${id}-preview-tab`} onClick={() => setPreview(true)}>Preview</button>
+        <div
+          className="comment-editor-tabs"
+          role="tablist"
+          aria-label={`${label} editor`}
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={!preview}
+            aria-controls={`${id}-write`}
+            id={`${id}-write-tab`}
+            onClick={() => setPreview(false)}
+          >
+            Write
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={preview}
+            aria-controls={`${id}-preview`}
+            id={`${id}-preview-tab`}
+            onClick={() => setPreview(true)}
+          >
+            Preview
+          </button>
         </div>
-        {!preview && <div className="comment-editor-tools" role="toolbar" aria-label="Markdown formatting">
-          {actions.map(({ label: actionLabel, icon: Icon, run }) => <button type="button" key={actionLabel} title={actionLabel} aria-label={actionLabel} onMouseDown={(event) => event.preventDefault()} onClick={run}><Icon size={15} /></button>)}
-        </div>}
+        {!preview && (
+          <div
+            className="comment-editor-tools"
+            role="toolbar"
+            aria-label="Markdown formatting"
+          >
+            {actions.map(({ label: actionLabel, icon: Icon, run }) => (
+              <Button
+                type="button"
+                key={actionLabel}
+                title={actionLabel}
+                aria-label={actionLabel}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={run}
+              >
+                <Icon size={15} />
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
-      <div role="tabpanel" id={`${id}-write`} aria-labelledby={`${id}-write-tab`} hidden={preview}>
-        <textarea ref={textarea} aria-label={label} placeholder={placeholder} value={value} onChange={(event) => onChange(event.target.value)} rows={rows} />
+      <div
+        role="tabpanel"
+        id={`${id}-write`}
+        aria-labelledby={`${id}-write-tab`}
+        hidden={preview}
+      >
+        <textarea
+          ref={textarea}
+          aria-label={label}
+          placeholder={placeholder}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          rows={rows}
+        />
       </div>
-      <div role="tabpanel" id={`${id}-preview`} aria-labelledby={`${id}-preview-tab`} hidden={!preview} className="comment-editor-preview">
-        {value.trim() ? <Markdown baseUrl={baseUrl}>{value}</Markdown> : <span className="muted">Nothing to preview</span>}
+      <div
+        role="tabpanel"
+        id={`${id}-preview`}
+        aria-labelledby={`${id}-preview-tab`}
+        hidden={!preview}
+        className="comment-editor-preview"
+      >
+        {value.trim() ? (
+          <Markdown baseUrl={baseUrl}>{value}</Markdown>
+        ) : (
+          <span className="muted">Nothing to preview</span>
+        )}
       </div>
     </div>
   );
