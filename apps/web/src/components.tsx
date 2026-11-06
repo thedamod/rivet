@@ -86,8 +86,8 @@ function MarkdownImage({
     staleTime: Infinity,
   });
   const [naturalSmall, setNaturalSmall] = useState(false);
-  const w = Number(width),
-    h = Number(height);
+  const w = Number(width) || image.data?.dimensions?.width || 0,
+    h = Number(height) || image.data?.dimensions?.height || 0;
   const inline = naturalSmall || (w > 0 && w <= 40) || (h > 0 && h <= 32);
   return (
     <span
@@ -110,8 +110,8 @@ function MarkdownImage({
             )
           }
           style={{
-            width: w > 0 ? w : undefined,
-            height: h > 0 ? h : undefined,
+            width: inline ? w || undefined : "100%",
+            height: inline ? h || undefined : "auto",
           }}
           decoding="async"
         />
