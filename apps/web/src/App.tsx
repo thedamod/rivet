@@ -1,10 +1,11 @@
 import { useAppHistory } from "./useAppHistory";
 import { IssueGlyph } from "./ui/status";
-import { CommandPalette } from "./ui/primitives";
+import { NavbarSearch } from "./NavbarSearch";
+import "./navbar.css";
 import { Button } from "./ui/primitives";
 import { ProfileView } from "./ProfileView";
 import { ProfileNavigation } from "./navigation";
-import { useEffect, useState, useDeferredValue } from "react";
+import { useEffect, useState, useDeferredValue, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Github as GithubLogo,
@@ -48,6 +49,18 @@ const navigation = [
 ] as const;
 export function App() {
   const client = useQueryClient();
+  const navbar = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!navbar.current) return;
+    const resize = new ResizeObserver(() =>
+      document.documentElement.style.setProperty(
+        "--app-navbar-height",
+        `${navbar.current?.getBoundingClientRect().height || 40}px`,
+      ),
+    );
+    resize.observe(navbar.current);
+    return () => resize.disconnect();
+  }, []);
   const viewer = useQuery({ queryKey: ["viewer"], queryFn: api.viewer });
   const [profile, setProfile] = useState<string | null>(null);
   const [view, setView] = useState<View>("repositories");
@@ -69,8 +82,6 @@ export function App() {
   const [page, setPage] = useState(1);
   const [state, setState] = useState("open");
 
-  const [palette, setPalette] = useState(false);
-  const [command, setCommand] = useState("");
   const [theme, setTheme] = useState(
     () => localStorage.getItem("git-client-theme") || "dark",
   );
@@ -82,10 +93,14 @@ export function App() {
     function key(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        setPalette((v) => !v);
+        const input = document.getElementById(
+          "global-search",
+        ) as HTMLInputElement | null;
+        input?.focus();
+        input?.select();
       }
       if (e.key === "Escape") {
-        setPalette(false);
+        (document.activeElement as HTMLElement)?.blur();
       }
     }
     document.addEventListener("keydown", key);
@@ -141,42 +156,73 @@ export function App() {
         .includes(deferred.toLowerCase()),
   );
   return (
-    <ProfileNavigation.Provider value={setProfile}>
+    <ProfileNavigation.Provider
+      value={(login) => {
+        setSearch("");
+        setProfile(login);
+      }}
+    >
       <div className="app-shell">
         <main className="main">
-          <header className="topbar">
+          <header className="topbar" ref={navbar}>
             <Button
-              className="icon home-icon"
-              aria-label="Home"
-              title="Home"
-              onClick={() => navigate("repositories")}
+              className="icon navbar-back"
+              aria-label="Back"
+              title="Back"
+              disabled={
+                !profile &&
+                !repo &&
+                !issue &&
+                view === "repositories" &&
+                !(history.state?.depth > 0)
+              }
+              onClick={goBack}
             >
-              <GithubLogo size={23} />
+              <ArrowLeft size={16} />
             </Button>
             <nav className="top-navigation" aria-label="Primary navigation">
               {navigation.map(([key, label, Icon]) => (
                 <Button
                   key={key}
-                  className={`icon ${view === key && !repo ? "active" : ""}`}
+                  className={`icon ${view === key && !repo && !profile && !issue ? "active" : ""}`}
                   title={label}
                   aria-label={label}
-                  aria-current={view === key && !repo ? "page" : undefined}
+                  aria-current={
+                    view === key && !repo && !profile && !issue
+                      ? "page"
+                      : undefined
+                  }
                   onClick={() => navigate(key)}
                 >
                   <Icon size={16} />
                 </Button>
               ))}
             </nav>
-            {repo && <span className="top-repo-name">{repo.full_name}</span>}
+            <NavbarSearch
+              value={search}
+              onChange={(value) => {
+                setSearch(value);
+                setPage(1);
+              }}
+              repositories={jumpRepos.data || []}
+              sections={navigation.map(([id, label, Icon]) => ({
+                id,
+                label,
+                icon: <Icon size={14} />,
+                onSelect: () => navigate(id),
+              }))}
+              onRepository={(r) => {
+                setSearch("");
+                setProfile(null);
+                setIssue(null);
+                setRepo(r);
+              }}
+              onProfile={(login) => {
+                setSearch("");
+                setProfile(login);
+              }}
+            />
             <div className="top-actions">
-              <Button
-                className="icon"
-                title="Search (⌘ K)"
-                aria-label="Search"
-                onClick={() => setPalette(true)}
-              >
-                <MagnifyingGlass size={16} />
-              </Button>
               <Button
                 className="icon"
                 title="Refresh"
@@ -197,7 +243,10 @@ export function App() {
                 className="icon"
                 title="Profile"
                 aria-label="Profile"
-                onClick={() => viewer.data && setProfile(viewer.data.login)}
+                onClick={() => {
+                  setSearch("");
+                  if (viewer.data) setProfile(viewer.data.login);
+                }}
               >
                 {viewer.data ? (
                   <img
@@ -227,6 +276,7 @@ export function App() {
             <ProfileView
               key={profile}
               login={profile}
+              search={search}
               onBack={goBack}
               onRepository={(r) => {
                 setProfile(null);
@@ -290,37 +340,16 @@ export function App() {
               <section>
                 <h2>Keyboard shortcuts</h2>
                 <p>
-                  <kbd>⌘ / Ctrl K</kbd> Open command menu
+                  <kbd>⌘ / Ctrl K</kbd> Focus search
                 </p>
                 <p>
-                  <kbd>Esc</kbd> Close command menu
+                  <kbd>Esc</kbd> Dismiss search
                 </p>
               </section>
             </div>
           ) : (
             <div className="page">
               <div className="list-toolbar">
-                <div className="input-icon">
-                  <MagnifyingGlass size={16} />
-                  <input
-                    aria-label={`Filter ${title}`}
-                    value={search}
-                    onChange={(e) => {
-                      setSearch(e.target.value);
-                      setPage(1);
-                    }}
-                    placeholder={`Find ${title.toLowerCase()}…`}
-                  />
-                  {search && (
-                    <Button
-                      className="icon"
-                      aria-label="Clear filter"
-                      onClick={() => setSearch("")}
-                    >
-                      <X size={13} />
-                    </Button>
-                  )}
-                </div>
                 {view === "issues" || view === "pulls" ? (
                   <div className="segmented">
                     {["open", "closed"].map((s) => (
@@ -507,45 +536,6 @@ export function App() {
             </div>
           )}
         </main>
-        <CommandPalette
-          open={palette}
-          onOpenChange={(open) => {
-            setPalette(open);
-            if (!open) setCommand("");
-          }}
-          query={command}
-          onQueryChange={setCommand}
-          items={[
-            ...navigation
-              .filter((n) => n[1].toLowerCase().includes(command.toLowerCase()))
-              .map(([key, label, Icon]) => ({
-                id: key,
-                label,
-                icon: <Icon size={16} />,
-                onSelect: () => {
-                  navigate(key);
-                  setPalette(false);
-                  setCommand("");
-                },
-              })),
-            ...(jumpRepos.data || [])
-              .filter((r) =>
-                r.full_name.toLowerCase().includes(command.toLowerCase()),
-              )
-              .map((r) => ({
-                id: String(r.id),
-                label: r.full_name,
-                icon: <BookOpen size={16} />,
-                onSelect: () => {
-                  setProfile(null);
-                  setRepo(r);
-                  setIssue(null);
-                  setPalette(false);
-                  setCommand("");
-                },
-              })),
-          ]}
-        />
       </div>
     </ProfileNavigation.Provider>
   );
