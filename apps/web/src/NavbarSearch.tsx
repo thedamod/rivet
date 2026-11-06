@@ -61,7 +61,7 @@ export function NavbarSearch({
         role="combobox"
         aria-label="Search"
         aria-autocomplete="list"
-        aria-expanded={visible}
+        aria-expanded={visible && items.length > 0}
         aria-controls={id}
         aria-activedescendant={
           visible && items[active] ? `${id}-${items[active].id}` : undefined

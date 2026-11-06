@@ -483,7 +483,7 @@ export function IssueDetail({
           className="pr-composer"
           onSubmit={(e) => {
             e.preventDefault();
-            comment.mutate();
+            if (body.trim() && !comment.isPending) comment.mutate();
           }}
         >
           <CommentEditor
@@ -492,28 +492,30 @@ export function IssueDetail({
             value={body}
             onChange={setBody}
             rows={4}
+            footer={
+              <div className="pr-composer-actions">
+                {!pull && (
+                  <Button
+                    className="icon"
+                    title={i?.state === "open" ? "Close issue" : "Reopen issue"}
+                    disabled={state.isPending}
+                    onClick={() => state.mutate()}
+                  >
+                    <RefreshCw size={16} />
+                  </Button>
+                )}
+                <Button
+                  className="icon comment-editor-submit"
+                  type="submit"
+                  title="Comment"
+                  disabled={!body.trim() || comment.isPending}
+                >
+                  <Send size={16} />
+                </Button>
+              </div>
+            }
             baseUrl={`https://github.com/${repo}/`}
           />
-          <div className="pr-composer-actions">
-            {!pull && (
-              <Button
-                className="icon"
-                title={i?.state === "open" ? "Close issue" : "Reopen issue"}
-                disabled={state.isPending}
-                onClick={() => state.mutate()}
-              >
-                <RefreshCw size={16} />
-              </Button>
-            )}
-            <Button
-              className="icon"
-              type="submit"
-              title="Comment"
-              disabled={!body.trim() || comment.isPending}
-            >
-              <Send size={16} />
-            </Button>
-          </div>
           {comment.error && <ErrorBox error={comment.error} />}{" "}
           {state.error && <ErrorBox error={state.error} />}
         </form>

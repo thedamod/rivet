@@ -93,3 +93,17 @@
   color: var(--text);
   background: color-mix(in srgb, var(--text) 7%, transparent);
 }
+
+.comment-editor-footer {
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+}
+.comment-editor-footer .pr-composer-actions {
+  margin: 0;
+  padding: 0;
+  min-height: 28px;
+}
+.comment-editor-footer button.comment-editor-submit[data-ui-button] {
+  background: var(--accent);
+  color: var(--accentForeground);
+}

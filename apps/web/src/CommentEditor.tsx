@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
 import {
   Bold,
   Code2,
@@ -21,6 +21,7 @@ type Props = {
   placeholder?: string;
   baseUrl?: string;
   rows?: number;
+  footer?: ReactNode;
 };
 
 export function CommentEditor({
@@ -30,6 +31,7 @@ export function CommentEditor({
   placeholder,
   baseUrl,
   rows = 6,
+  footer,
 }: Props) {
   const [preview, setPreview] = useState(false);
   const textarea = useRef<HTMLTextAreaElement>(null);
@@ -161,6 +163,7 @@ export function CommentEditor({
           <span className="muted">Nothing to preview</span>
         )}
       </div>
+      {footer && <div className="comment-editor-footer">{footer}</div>}
     </div>
   );
 }
