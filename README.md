@@ -6,15 +6,29 @@ An Electron and Expo React Native GitHub client. T3 Code's light/dark palettes, 
 
 Requires Node 24 and npm 11. Run `npm install` from this directory; installation also builds the offline mobile viewer.
 
-- `npm run dev`: web client at http://127.0.0.1:5173
+- `npm run dev`: web client on `0.0.0.0:5173` (open http://localhost:5173)
 - `npm run desktop`: Vite and Electron together
 - `npm run mobile`: Expo development server for iOS and Android
 - `npm run package:desktop`: unpacked desktop application in `release/`
 - `npm run export -w @git-client/mobile`: native Metro/Hermes bundles
 
-Desktop/web authenticates through the local GitHub CLI (`gh auth login`) or `GH_TOKEN`. The renderer never receives that token. The local development proxy accepts same-origin requests carrying the application's request marker. Packaged Electron uses an isolated preload API. GitHub CLI must also be installed to clone repositories.
+## GitHub OAuth
 
-Mobile accepts a personal access token through the connection screen and stores it in Expo SecureStore. Repository read permissions enable browsing; write permissions are needed for creating issues and comments; user starring permissions enable stars. Notifications require a token supporting the notifications API. Organization access depends on token grants and SSO authorization. CI details need Checks and Commit statuses read access; unavailable check permissions are isolated to the checks section. Merge actions need repository write access, respect repository merge methods, ask for confirmation, and send the displayed head SHA.
+Register a [GitHub OAuth App](https://github.com/settings/applications/new), enable **Device flow** in its settings, and put its public client ID in the root `github-oauth.json`:
+
+```json
+{ "clientId": "YOUR_PUBLIC_CLIENT_ID" }
+```
+
+GitHub requires a callback URL during registration; `http://127.0.0.1:5173` is suitable for development. Device authorization does not use this callback. No client secret is required or bundled. Restart development servers after changing the client ID and rebuild packaged clients. Desktop/web can override the ID with `GIT_CLIENT_GITHUB_CLIENT_ID`; Expo can override it with `EXPO_PUBLIC_GITHUB_CLIENT_ID` in `apps/mobile/.env`.
+
+Select **Sign in with GitHub**, then enter the displayed verification code on GitHub and approve access. Web opens GitHub when **Continue on GitHub** is selected; desktop/mobile use the system browser. Authorization completes in the app automatically. All clients use GitHub's [OAuth device flow](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#device-flow), including expiring-token refresh when GitHub issues refresh tokens. PAT entry, environment-token fallback, and reuse of `gh auth` credentials have been removed. Existing mobile PATs are discarded on startup.
+
+Requested scopes are `repo`, `read:user`, `read:org`, and `notifications`: private repository access and repository writes (issues, comments, merges), profiles, organization membership, and notifications. OAuth scopes are broader than fine-grained PAT permissions; GitHub displays them for approval. Organization SSO and OAuth application restrictions still apply. Merge actions respect repository merge methods, ask for confirmation, and send the displayed head SHA. Unavailable CI permissions remain scoped to the checks section.
+
+Electron stores the OAuth session encrypted with the OS keyring through `safeStorage`; a locked or unavailable keyring requires unlocking before sign-in can complete. Access and refresh tokens stay in the main process. Cloning requires Git and uses a temporary credential helper scoped to github.com, with the OAuth credential passed only through the child-process environment. Tokens are not embedded in remote URLs or saved to Git configuration. Mobile stores OAuth credentials in Expo SecureStore. The development web server keeps credentials only in memory, isolated by an HttpOnly, SameSite cookie; restarting it requires browser sign-in again. Its API requires the application's request marker and rejects cross-origin requests. The Vite server is for development, not production hosting.
+
+Sign out removes the local OAuth session and cached account data. To revoke the app's GitHub authorization as well, use [Authorized OAuth Apps](https://github.com/settings/applications). No credentials belong in `github-oauth.json`; its client ID is public.
 
 ## Clients and shared packages
 
