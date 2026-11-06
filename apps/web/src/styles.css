@@ -63,7 +63,7 @@ select {
   min-width: 0;
 }
 textarea {
-  resize: vertical;
+  resize: none;
   width: 100%;
   line-height: 1.6;
 }
@@ -577,21 +577,21 @@ nav button span:nth-child(2) {
 }
 .tabs {
   display: flex;
-  gap: 25px;
+  gap: 5px;
   border-bottom: 1px solid var(--border);
 }
 .tabs button {
   background: transparent;
   border: 0;
-  border-bottom: 2px solid transparent;
+  border-bottom: 0;
   border-radius: 0;
-  padding: 12px 0;
+  padding: 8px 10px;
   font-size: 11px;
   color: var(--textMuted);
 }
 .tabs button.active {
   color: var(--text);
-  border-color: var(--accent);
+  background: var(--sidebarRowActive);
 }
 .repository-body {
   display: grid;
@@ -1463,7 +1463,7 @@ diffs-container {
   justify-content: flex-end;
 }
 .pr-tab-panel {
-  min-height: 600px;
+  min-height: 0;
 }
 .pr-tab-panel[hidden] {
   display: none;
@@ -1851,7 +1851,7 @@ diffs-container {
   border-radius: 0;
 }
 .owner-link:hover {
-  text-decoration: underline;
+  text-decoration: none;
   background: transparent;
 }
 .profile-page {
@@ -1964,16 +1964,17 @@ diffs-container {
   margin-bottom: 24px;
 }
 .profile-tabs button {
+  align-self: center;
   border: 0;
-  border-bottom: 2px solid transparent;
-  border-radius: 0;
+  border-bottom: 0;
+  border-radius: 6px;
   background: transparent;
-  padding: 0 6px 12px;
+  padding: 8px 12px;
   color: var(--textMuted);
 }
 .profile-tabs button.active {
   color: var(--text);
-  border-color: var(--accent);
+  background: var(--sidebarRowActive);
 }
 .profile-tabs span {
   font-size: 10px;
@@ -2047,8 +2048,7 @@ diffs-container {
   font-weight: 500;
 }
 .pr-author-link:hover {
-  background: transparent;
-  text-decoration: underline;
+  background: var(--toolbarControlHover);
 }
 @media (max-width: 760px) {
   .has-file .explorer-split {

@@ -176,7 +176,7 @@ export function NativePullRequest({
     onSuccess: () => {
       setBody("");
       client.invalidateQueries({ queryKey: ["pr-timeline", repo, number] });
-      client.invalidateQueries({ queryKey: ["comments", repo, number] });
+      client.invalidateQueries({ queryKey: ["pr-comments", repo, number] });
       client.invalidateQueries({ queryKey: ["issue", repo, number] });
     },
   });
@@ -349,6 +349,35 @@ export function NativePullRequest({
   const prose = (pr.body || "").replace(
     /<img\b[^>]*>|!\[[^\]]*\]\([^\s)]+\)/g,
     "",
+  );
+  const composer = (
+    <View style={[styles.composer, { borderTopColor: colors.border }]}>
+      <CommentEditor
+        label="Comment"
+        value={body}
+        onChangeText={setBody}
+        {...markdownProps}
+      />
+      <View style={[styles.row, { justifyContent: "flex-end" }]}>
+        {!pull &&
+          iconButton(
+            pr.state === "open"
+              ? "checkmark-circle-outline"
+              : "refresh-outline",
+            pr.state === "open" ? "Close issue" : "Reopen issue",
+            () => change.mutate(),
+            change.isPending,
+          )}
+        {iconButton(
+          "arrow-up",
+          "Post comment",
+          () => comment.mutate(),
+          !body.trim() || comment.isPending,
+        )}
+      </View>
+      {comment.error && error(comment.error)}
+      {change.error && error(change.error)}
+    </View>
   );
   return (
     <ScrollView
@@ -766,7 +795,9 @@ export function NativePullRequest({
             number={number}
             branch={markdownProps.branch}
             colors={colors}
-          />
+          >
+            {composer}
+          </NativeComments>
           {pull && (
             <View
               style={{
@@ -1056,33 +1087,6 @@ export function NativePullRequest({
                   </View>
                 ))}
           {pager(timeline.data?.length === 50)}
-          <View style={[styles.composer, { borderTopColor: colors.border }]}>
-            <CommentEditor
-              label="Comment"
-              value={body}
-              onChangeText={setBody}
-              {...markdownProps}
-            />
-            <View style={[styles.row, { justifyContent: "flex-end" }]}>
-              {!pull &&
-                iconButton(
-                  pr.state === "open"
-                    ? "checkmark-circle-outline"
-                    : "refresh-outline",
-                  pr.state === "open" ? "Close issue" : "Reopen issue",
-                  () => change.mutate(),
-                  change.isPending,
-                )}
-              {iconButton(
-                "arrow-up",
-                "Post comment",
-                () => comment.mutate(),
-                !body.trim() || comment.isPending,
-              )}
-            </View>
-            {comment.error && error(comment.error)}
-            {change.error && error(change.error)}
-          </View>
         </>
       )}
       <Sheet
@@ -1130,7 +1134,7 @@ export function NativePullRequest({
 }
 
 const styles = StyleSheet.create({
-  content: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 32 },
+  content: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 32 },
   controlRow: {
     flexDirection: "row",
     alignItems: "center",

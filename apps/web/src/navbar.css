@@ -38,8 +38,8 @@
   flex: 0 0 20px;
 }
 .navbar-search:focus-within {
-  border-color: var(--focus);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--focus) 20%, transparent);
+  border-color: var(--input);
+  box-shadow: none;
 }
 .navbar-search-results {
   position: absolute;

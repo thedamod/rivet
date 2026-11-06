@@ -431,10 +431,13 @@ function Workspace({
         <View
           style={[
             s.header,
-            { borderBottomColor: colors.border },
+            {
+              borderBottomColor: colors.border,
+              backgroundColor: colors.canvas,
+            },
             route?.kind === "issue" && {
               height: 72,
-              backgroundColor: colors.surface,
+              backgroundColor: colors.canvas,
               borderBottomWidth: 0,
             },
           ]}
@@ -880,8 +883,8 @@ function Workspace({
           style={[
             s.tabbar,
             {
-              backgroundColor: colors.sidebar,
-              borderTopColor: colors.sidebarBorder,
+              backgroundColor: colors.canvas,
+              borderTopColor: colors.border,
             },
           ]}
         >

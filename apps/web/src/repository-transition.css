@@ -1,110 +1,119 @@
-/* Keep the surrounding navigation still while the explorer changes modes. */
-.repository-explorer {
-  view-transition-name: repository-explorer;
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-::view-transition-old(repository-explorer),
-::view-transition-new(repository-explorer) {
-  animation-duration: 240ms;
-  animation-timing-function: ease-out;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(repository-explorer),
-  ::view-transition-new(repository-explorer) {
-    animation-duration: 0s;
-  }
-}
-
-/* Crossfade the pane instead of scaling a long README into a short editor. */
-::view-transition-group(repository-explorer) {
-  animation: none;
-}
-::view-transition-image-pair(repository-explorer) {
-  isolation: isolate;
-}
-
-/* The file viewer keeps a full-width, compact repository toolbar. */
-.repository-view .repo-header {
-  view-transition-name: repository-header;
-}
-.repository-view:has(.has-file) {
-  height: calc(100dvh - var(--app-navbar-height, 60px));
-}
-.repository-view:has(.has-file) .repo-header {
+/* Keep one toolbar geometry in browse and file modes. Whole-document snapshots
+   duplicate sticky headers and race Pierre's asynchronous layout. */
+.repository-code .repo-header {
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: 8px 16px;
-  display: flex;
-  flex-direction: row;
+  padding: 10px 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 20px;
+  gap: 8px 20px;
 }
-.repository-view:has(.has-file) .repo-header-title {
+.repository-code .repo-header-title {
   margin: 0;
-  flex: 1;
   min-width: 0;
   gap: 8px;
 }
-.repository-view:has(.has-file) .repo-header-title h1 {
-  font-size: 13px;
-  line-height: 20px;
-  white-space: nowrap;
+.repository-code .repo-header-title h1 {
+  font-size: 15px;
+  line-height: 22px;
+}
+.repository-code .repo-header-title > svg {
+  width: 18px;
+  height: 18px;
+}
+.repository-code .repo-header-actions {
+  gap: 6px;
+}
+.repository-code .repo-header > p {
+  grid-column: 1 / -1;
+  margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 20px;
 }
-.repository-view:has(.has-file) .repo-header-title > .badge,
-.repository-view:has(.has-file) .repo-header-actions,
-.repository-view:has(.has-file) .repo-header > p {
+.repository-code .repo-header > p:empty {
   display: none;
 }
-.repository-view:has(.has-file) .repo-header .tabs {
+.repository-code .tabs {
   margin: 0;
   border: 0;
   gap: 4px;
   min-width: 0;
 }
-.repository-view:has(.has-file) .repo-header .tabs button {
-  height: 28px;
-  padding: 4px 7px;
+.repository-code .tabs button {
+  height: 30px;
+  border-radius: 5px;
+  padding: 4px 8px;
 }
-.repository-view:has(.has-file) .repo-header .t3-branch-trigger {
+.repository-code .t3-branch-trigger {
   max-width: 160px;
 }
-::view-transition-group(repository-header) {
-  animation: none;
+.repository-code .repository-body {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 20px 20px;
 }
-::view-transition-old(repository-header),
-::view-transition-new(repository-header) {
-  animation-duration: 180ms;
+.repository-readme {
+  max-width: 1160px;
+  margin-inline: auto;
+}
+.repository-readme[hidden] {
+  display: none;
+}
+.repository-explorer:not(.has-file) .explorer-tree {
+  max-width: 1160px;
+  margin-inline: auto;
+}
+.repository-code:has(.has-file) {
+  height: calc(100dvh - var(--app-navbar-height, 60px));
+}
+.repository-code:has(.has-file) .repo-header {
+  flex-shrink: 0;
+  padding: 10px 20px;
+}
+.repository-code:has(.has-file) .repository-body {
+  padding: 0 20px;
+}
+.repository-code:has(.has-file) .code-toolbar {
+  display: none;
+}
+.repository-code .explorer-file {
+  animation: file-pane-enter 140ms ease-out;
+}
+@keyframes file-pane-enter {
+  from {
+    opacity: 0.6;
+    transform: translateX(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 @media (max-width: 760px) {
-  .repository-view:has(.has-file) .repo-header {
-    padding: 6px 10px;
-    flex-wrap: wrap;
-    gap: 4px 10px;
+  .repository-code .repo-header,
+  .repository-code:has(.has-file) .repo-header {
+    padding: 8px 12px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
   }
-  .repository-view:has(.has-file) .repo-header-title {
-    flex-basis: 100%;
-  }
-  .repository-view:has(.has-file) .repo-header .tabs {
+  .repository-code .repo-header .tabs {
     width: 100%;
+  }
+  .repository-code .repo-header > p {
+    display: none;
+  }
+  .repository-code .repository-body,
+  .repository-code:has(.has-file) .repository-body {
+    padding-inline: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(repository-header),
-  ::view-transition-new(repository-header) {
-    animation-duration: 0s;
+  .repository-code .explorer-file {
+    animation: none;
   }
-}
-
-.repository-view:has(.has-file) .code-toolbar {
-  display: none;
 }

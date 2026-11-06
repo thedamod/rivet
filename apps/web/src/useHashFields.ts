@@ -1,9 +1,5 @@
-import { flushSync } from "react-dom";
 import { useEffect, useRef, useState } from "react";
-export function useHashFields<T extends Record<string, string>>(
-  defaults: T,
-  options: { animateFile?: boolean } = {},
-) {
+export function useHashFields<T extends Record<string, string>>(defaults: T) {
   const read = () => {
     const params = new URLSearchParams(location.hash.split("?")[1] || "");
     return Object.fromEntries(
@@ -16,15 +12,7 @@ export function useHashFields<T extends Record<string, string>>(
   useEffect(() => {
     const restore = () => {
       const next = read();
-      const apply = () => setValue(next);
-      if (
-        options.animateFile &&
-        next.file !== current.current.file &&
-        typeof document.startViewTransition === "function" &&
-        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ) {
-        document.startViewTransition(() => flushSync(apply));
-      } else apply();
+      setValue(next);
     };
     window.addEventListener("popstate", restore);
     return () => window.removeEventListener("popstate", restore);

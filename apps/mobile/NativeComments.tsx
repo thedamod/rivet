@@ -68,12 +68,14 @@ export function NativeComments({
   number,
   branch,
   colors,
+  children,
 }: {
   api: GitHubClient;
   repo: string;
   number: number;
   branch: string;
   colors: Palette;
+  children?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -174,6 +176,7 @@ export function NativeComments({
             />
           ))
         ))}
+      {open && children}
     </View>
   );
 }

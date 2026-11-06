@@ -1,0 +1,22 @@
+/* Keyboard focus uses the same fill and text treatment as hover, without rings. */
+*:focus,
+*:focus-visible,
+*:focus-visible::before,
+*:focus-visible::after {
+  outline: none !important;
+  box-shadow: none !important;
+}
+button:focus-visible:not(.contribution-day) {
+  color: var(--text);
+  background-color: var(--toolbarControlHover);
+}
+button.contribution-day:focus-visible {
+  filter: brightness(1.35);
+}
+.navbar-search:focus-within {
+  border-color: var(--input);
+  box-shadow: none;
+}
+.profile-activity .contribution-day:focus-visible {
+  outline: none;
+}

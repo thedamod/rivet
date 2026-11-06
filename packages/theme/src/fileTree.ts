@@ -192,6 +192,7 @@ export const repositoryTreeCSS = `
     --trees-fg-muted-override: var(--textMuted, #818181);
     --trees-border-radius-override: 6px;
   }
+  *:focus, *:focus-visible, *:focus-visible::before, *:focus-visible::after { outline: none !important; box-shadow: none !important; }
   [data-truncate-content='visible'] { overflow: hidden; text-overflow: ellipsis; }
   [data-truncate-marker] { display: none; }
   button[data-type='item'], button[data-type='item']::before { border-radius: 6px; }

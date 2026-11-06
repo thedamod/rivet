@@ -8,6 +8,9 @@ import "@fontsource/geist/latin-600.css";
 import "@fontsource/geist-mono/latin-400.css";
 import "./styles.css";
 import "./ui/primitives.css";
+import "./repository-transition.css";
+import "./discussion.css";
+import "./focus.css";
 import { AuthGate } from "./AuthGate";
 import { App } from "./App";
 const client = new QueryClient({

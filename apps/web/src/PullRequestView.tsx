@@ -192,6 +192,48 @@ export function IssueDetail({
       onOrder={() => setNewest((v) => !v)}
     />
   );
+  const composer = (
+    <form
+      className="pr-composer"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (body.trim() && !comment.isPending) comment.mutate();
+      }}
+    >
+      <CommentEditor
+        label="Comment"
+        placeholder="Comment…"
+        value={body}
+        onChange={setBody}
+        rows={4}
+        footer={
+          <div className="pr-composer-actions">
+            {!pull && (
+              <Button
+                className="icon"
+                title={i?.state === "open" ? "Close issue" : "Reopen issue"}
+                disabled={state.isPending}
+                onClick={() => state.mutate()}
+              >
+                <RefreshCw size={16} />
+              </Button>
+            )}
+            <Button
+              className="icon comment-editor-submit"
+              type="submit"
+              title="Comment"
+              disabled={!body.trim() || comment.isPending}
+            >
+              <Send size={16} />
+            </Button>
+          </div>
+        }
+        baseUrl={`https://github.com/${repo}/`}
+      />
+      {comment.error && <ErrorBox error={comment.error} />}{" "}
+      {state.error && <ErrorBox error={state.error} />}
+    </form>
+  );
   return (
     <div className="pr-detail" aria-busy={detail.isPending}>
       <div className={`pr-sticky ${compact ? "compact-pr" : ""}`}>
@@ -451,6 +493,7 @@ export function IssueDetail({
                   )}
               </>
             ))}
+          {commentsOpen && <div className="pr-comment-panel">{composer}</div>}
         </section>
       </section>
       <section
@@ -477,48 +520,6 @@ export function IssueDetail({
               )}
           </>
         )}
-      </section>
-      <section className="pr-tab-panel pr-timeline" hidden={tab === "code"}>
-        <form
-          className="pr-composer"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (body.trim() && !comment.isPending) comment.mutate();
-          }}
-        >
-          <CommentEditor
-            label="Comment"
-            placeholder="Comment…"
-            value={body}
-            onChange={setBody}
-            rows={4}
-            footer={
-              <div className="pr-composer-actions">
-                {!pull && (
-                  <Button
-                    className="icon"
-                    title={i?.state === "open" ? "Close issue" : "Reopen issue"}
-                    disabled={state.isPending}
-                    onClick={() => state.mutate()}
-                  >
-                    <RefreshCw size={16} />
-                  </Button>
-                )}
-                <Button
-                  className="icon comment-editor-submit"
-                  type="submit"
-                  title="Comment"
-                  disabled={!body.trim() || comment.isPending}
-                >
-                  <Send size={16} />
-                </Button>
-              </div>
-            }
-            baseUrl={`https://github.com/${repo}/`}
-          />
-          {comment.error && <ErrorBox error={comment.error} />}{" "}
-          {state.error && <ErrorBox error={state.error} />}
-        </form>
       </section>
       {pull && (
         <section

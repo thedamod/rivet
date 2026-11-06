@@ -88,10 +88,12 @@ export function CommentEditor({
             accessibilityState={{ selected: preview === isPreview }}
             onPress={() => setPreview(isPreview)}
             style={{
-              paddingHorizontal: 12,
-              paddingVertical: 10,
-              borderBottomWidth: preview === isPreview ? 2 : 0,
-              borderBottomColor: colors.text,
+              paddingHorizontal: 10,
+              paddingVertical: 7,
+              margin: 4,
+              borderRadius: 5,
+              backgroundColor:
+                preview === isPreview ? colors.surface : "transparent",
             }}
           >
             <Text
@@ -134,7 +136,11 @@ export function CommentEditor({
         </ScrollView>
       )}
       {preview ? (
-        <View style={{ minHeight: 150, padding: 12 }}>
+        <ScrollView
+          style={{ height: 150 }}
+          contentContainerStyle={{ padding: 12 }}
+          nestedScrollEnabled
+        >
           {value.trim() ? (
             <NativeMarkdown
               api={api}
@@ -149,12 +155,13 @@ export function CommentEditor({
               Nothing to preview.
             </Text>
           )}
-        </View>
+        </ScrollView>
       ) : (
         <TextInput
           ref={input}
           accessibilityLabel={label}
           multiline
+          scrollEnabled
           value={value}
           onChangeText={onChangeText}
           selection={selection}
@@ -164,7 +171,7 @@ export function CommentEditor({
           placeholder={label}
           placeholderTextColor={colors.textMuted}
           style={{
-            minHeight: 150,
+            height: 150,
             padding: 12,
             textAlignVertical: "top",
             color: colors.text,

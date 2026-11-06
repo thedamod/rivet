@@ -50,14 +50,11 @@ export function RepositoryView({
   onIssue: (n: number, pull: boolean) => void;
 }) {
   const openProfile = useOpenProfile();
-  const [location, setLocation] = useHashFields(
-    {
-      tab: "code",
-      branch: repo.default_branch,
-      file: "",
-    },
-    { animateFile: true },
-  );
+  const [location, setLocation] = useHashFields({
+    tab: "code",
+    branch: repo.default_branch,
+    file: "",
+  });
   const { tab, branch, file: path } = location;
   const setTab = (tab: string) => setLocation({ tab, file: "" });
   const setBranch = (branch: string) => setLocation({ branch, file: "" });
@@ -108,7 +105,9 @@ export function RepositoryView({
   });
 
   return (
-    <div className="repository-view">
+    <div
+      className={`repository-view ${tab === "code" ? "repository-code" : ""}`}
+    >
       <div className="repo-header">
         <div className="repo-header-title">
           <BookOpen size={22} />
@@ -148,6 +147,7 @@ export function RepositoryView({
               key={id as string}
               aria-label={label as string}
               title={label as string}
+              aria-pressed={tab === id}
               className={tab === id ? "active" : ""}
               onClick={() => {
                 setTab(id as string);

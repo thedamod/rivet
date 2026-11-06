@@ -1,4 +1,10 @@
-import { useId, useRef, useState, type ReactNode } from "react";
+import {
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import {
   Bold,
   Code2,
@@ -86,7 +92,14 @@ export function CommentEditor({
   ];
 
   return (
-    <div className="comment-editor">
+    <div
+      className="comment-editor"
+      style={
+        {
+          "--editor-height": `${Math.max(4, rows) * 22 + 24}px`,
+        } as CSSProperties
+      }
+    >
       <div className="comment-editor-bar">
         <div
           className="comment-editor-tabs"

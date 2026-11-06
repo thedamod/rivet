@@ -1,7 +1,5 @@
 import { Button } from "./ui/primitives";
 import { useMemo, useRef, useLayoutEffect } from "react";
-import { flushSync } from "react-dom";
-import "./repository-transition.css";
 import { useQuery } from "@tanstack/react-query";
 import { X, File } from "lucide-react";
 import {
@@ -40,14 +38,7 @@ export function RepositoryCode({
   function changeSelection(path: string) {
     if (path && !selected)
       browseScroll.current = document.querySelector(".main")?.scrollTop || 0;
-    if (
-      typeof document.startViewTransition === "function" &&
-      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      document.startViewTransition(() => flushSync(() => setSelected(path)));
-    } else {
-      setSelected(path);
-    }
+    setSelected(path);
   }
   function openFile(path: string) {
     changeSelection(path);
@@ -149,23 +140,21 @@ export function RepositoryCode({
   );
   return (
     <div className={`repository-explorer ${selected ? "has-file" : ""}`}>
-      {!selected && (
-        <div className="readme repository-readme">
-          {readme.isPending && readmePath ? (
-            <Loading />
-          ) : readme.error ? (
-            <ErrorBox error={readme.error} retry={() => readme.refetch()} />
-          ) : readme.data?.content ? (
-            <>
-              <Markdown
-                baseUrl={`https://github.com/${repo.full_name}/blob/${encodeURIComponent(branch)}/`}
-              >
-                {decodeContent(readme.data.content)}
-              </Markdown>
-            </>
-          ) : null}
-        </div>
-      )}
+      <div className="readme repository-readme" hidden={!!selected}>
+        {readme.isPending && readmePath ? (
+          <Loading />
+        ) : readme.error ? (
+          <ErrorBox error={readme.error} retry={() => readme.refetch()} />
+        ) : readme.data?.content ? (
+          <>
+            <Markdown
+              baseUrl={`https://github.com/${repo.full_name}/blob/${encodeURIComponent(branch)}/`}
+            >
+              {decodeContent(readme.data.content)}
+            </Markdown>
+          </>
+        ) : null}
+      </div>
       <div className="explorer-split">
         <div className="explorer-tree" aria-label="Repository explorer">
           {tree.isPending ? (
